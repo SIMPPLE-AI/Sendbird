@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120779346536",
+    "project_id": "ifscxsendbird",
+    "storage_bucket": "ifscxsendbird.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120779346536:android:7ab0f740d4fd6123caa1dd",
+        "android_client_info": {
+          "package_name": "com.ifsc.sendbird"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADHbWbBNX-SxCiwTJryRin8LK5T628KRY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

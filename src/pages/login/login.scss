@@ -1,0 +1,60 @@
+page-login {
+    ion-content {
+        background-image: url(../../assets/imgs/background_orange.jpg); 
+    }
+    ion-label {
+        font-family:DM Sans !important;
+        padding-bottom: 4px;
+    }
+    ion-input {
+        padding: 6px;
+        font-family:DM Sans !important;
+        border: solid 0.6px;
+        border-color: #A6A6A6;
+        border-radius: 3px;
+        size:20px;
+        color: #A6A6A6;
+        text-align: left;
+    }
+    ion-grid {
+        display: flex; 
+        justify-content: center;
+    }
+    h1 {
+        text-align: left; 
+        padding-left: 12px; 
+        padding-bottom: 20px; 
+        padding-top: 48px;
+        height: 34px;
+        font: DM Mono;
+    }
+    h2 {
+        text-align: left; 
+        padding-left: 12px;
+        padding-top: 32px;
+        padding-bottom: 32px;
+        font-family:DM Sans !important;
+        height: 52px;
+    }
+    h3 {
+        padding-left: 8px;
+        padding-top: 15px;
+        text-align: left; 
+        font-family:DM Sans !important;
+    }
+    .signin {
+        border: 0.5px;
+        border-radius: 16px;    
+        justify-content: center;
+    }
+    .ion-card {
+        height: 95%; 
+        padding: 10px;
+        display: flex; 
+        align-items: center;
+        justify-content: center;
+    }
+    .column1 {
+        width: 30%;
+    }
+}
