@@ -11,12 +11,17 @@
         <form (ngSubmit)="login()" #registerForm="ngForm">
           <ion-grid>
             <ion-row>
+              <!-- LOGIN ROBOT IMAGE -->
               <ion-col style="width: fit-content;">
                 <img style="display: inline; padding-top: 30px; width:90%; height: 90%;" src="../../assets/imgs/login_robot.png"/>
               </ion-col>
+
               <ion-col>
+                <!-- INTRODUCTION TEXT -->
                 <h1 style="font-size: 24px;">Welcome Back!</h1>
                 <h2 style="font-size: 33px;">Sign In</h2>
+
+                <!-- LOGIN CREDENTIALS IS ENTERED HERE -->
                 <ion-list inset>
                   <ion-item style="padding-bottom: 10px;">
                     <ion-label style="font-size: 18px; color: #111016; " stacked>Login Name</ion-label> 
@@ -27,6 +32,7 @@
                     <ion-input type="password" placeholder=" Password" [(ngModel)]="log.Password" name="password" required></ion-input>
                   </ion-item>
                 </ion-list>
+                <!-- SIGN IN BUTTON -->
                 <div style="padding: 0px 16px;">
                   <button ion-button color="dark" full type="submit" style="height: 45px;font-size: 18px;border-radius: 10px;" [disabled]="!registerForm.form.valid">Sign In</button>
                 </div>
@@ -36,5 +42,7 @@
         </form>
     </ion-card>
   </div>
-  <img id="exitlogo" style="height:45px; float: right; padding-right: 40px; padding-bottom: 16px;" src="../../assets/imgs/Bottom_Right_Logo.png" (click)="exit()"/>
+
+  <!-- HIDDEN EXIT BUTTON -->
+  <img id="exitlogo" style="height:45px; position: fixed; bottom: 16px; right: 40px;" src="../../assets/imgs/Bottom_Right_Logo.png" (click)="exit()"/>
 </ion-content>

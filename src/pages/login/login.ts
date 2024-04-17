@@ -43,26 +43,27 @@ export class LoginPage {
     // SAVE CREDENTIALS
     this.storage.set("login", this.log);
 
-    let headers = new HttpHeaders();
-    headers.append('Access-Control-Allow-Origin' , '*');
-    headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', 'my-auth-token');
-    let username = 'user2';
-    let password = 'simpple123';
-    let params = {
-        "username":username,
-        "password":password
-    };
-    console.log(params);
-    const url = "http://192.168.100.151";
-    this.http.post(url + '/api/robotLogin',{headers: headers, params: params}).subscribe(data => {
-      if(data['success']){
-        console.log("Logged in");
-      }
-      else{
-        console.log("Invalid credentials");
-      }
-    });
+    // VERIFY LOGIN WITH DATABASE
+    // let headers = new HttpHeaders();
+    // headers.append('Access-Control-Allow-Origin' , '*');
+    // headers.append('Content-Type', 'application/json');
+    // headers.append('Authorization', 'my-auth-token');
+    // let username = 'user2';
+    // let password = 'simpple123';
+    // let params = {
+    //     "username":username,
+    //     "password":password
+    // };
+    // console.log(params);
+    // const url = "http://192.168.100.151";
+    // this.http.post(url + '/api/robotLogin',{headers: headers, params: params}).subscribe(data => {
+    //   if(data['success']){
+    //     console.log("Logged in");
+    //   }
+    //   else{
+    //     console.log("Invalid credentials");
+    //   }
+    // });
 
     // GO TO MAIN PAGE
     this.navCtrl.setRoot(HomePage);

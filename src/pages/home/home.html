@@ -6,8 +6,79 @@
 -->
 
 <ion-content class="ion-content">
-  <div>
+  <div class="overallpage" hidden="true">  
+    <!-- CLIENT LOGO -->
+    <div style="display: flex; justify-content: center; padding-top: 5%;">
+      <ion-row style="padding-top: 5%;">
+        <img style="display:flex; justify-content: center; width: 60.5px; height: 62.5px; display:flex" src="../../assets/imgs/client_name.png"/>
+        <h1 style="padding-left: 8px; font-size: 32px;">Client_Name</h1>
+      </ion-row>
+    </div>
+
+    <!-- CHARGING PAGE -->
+    <div class="chargingpage">
+      <!-- CHARGING TEXT -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 70%; height: 7%;" src="../../assets/imgs/charging_text.png"/>
+      </div>
+
+      <!-- CHARGING ROBOT IMAGE -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 80%; height: 8%;" src="../../assets/imgs/charging_robot.png"/>
+      </div>
+
+      <!-- SLIDE TO CALL -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <ion-range style="width: 70%; border-radius: 20px;"></ion-range>
+      </div>
+    </div>
+
+    <!-- PATROLLING PAGE -->
+    <div class="patrolpage" hidden="true">
+      <!-- PATROLLING TEXT -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Patrolling in Progress.png"/>
+      </div>
+
+      <!-- PATROLLING ROBOT IMAGE -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 40%; height: 4%;" src="../../assets/imgs/patrolling_robot.png"/>
+      </div>
+
+      <!-- SLIDE TO CALL -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <ion-range style="width: 70%; border-radius: 20px;"></ion-range>
+      </div>
+    </div>
+    <!-- LOAD CALL PAGE -->
+    <div class="loadcallpage" hidden="true">
+      <!-- LOAD CALL TEXT -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Getting Assistance in...png"/>
+      </div>
+
+      <!-- LOAD CALL COUNT -->
+      <div style="display: flex; justify-content: center; padding-top: 5%;">
+        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Count_3.png"/>
+      </div>
+
+      <!-- SLIDE TO CANCEL -->
+      <div style="display: flex; justify-content: center; padding-top: 10%;">
+        <ion-range style="width: 70%; border-radius: 20px;"></ion-range>
+      </div>
+    </div>
     
+    <!-- WARNING TEXT -->
+    <div style="display: flex; justify-content: center; padding-top: 3%;">
+      <img style="width: 85%; height: 8.5%;" src="../../assets/imgs/warning_text.png"/>
+    </div>
+
+    <!-- HIDDEN EXIT BUTTON -->
+    <img id="exitlogo" style="height:45px; position: fixed; bottom: 16px; right: 40px;" src="../../assets/imgs/Bottom_Right_Logo.png" (click)="exit()"/>
   </div>
-  <img id="exitlogo" style="height:45px; float: right; padding-right: 40px; padding-bottom: 16px;" src="../../assets/imgs/Bottom_Right_Logo.png" (click)="exit()"/>
+
+  <div class="videocall">
+    <video element id="local_video_element_id"></video>
+    <video element id="remote_video_element_id"></video>
+  </div>
 </ion-content>

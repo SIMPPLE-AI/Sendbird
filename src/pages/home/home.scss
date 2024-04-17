@@ -1,13 +1,20 @@
 page-home {
     ion-content {
-        background-image: url(../../assets/imgs/background_blue.jpg);
+        background-image: url(../../assets/imgs/background_blue.png);
     }
-    h3 {
-        width: 308px;
-        height: 62px;
+    .range-slider {
+        --bar-background: #a2d2ff;
+        --bar-background-active: #bde0fe;
+        --bar-height: 8px;
+        --bar-border-radius: 8px;
+        --knob-background: #ffc8dd;
+        --knob-size: 40px;
+        --pin-background: #ffafcc;
+        --pin-color: #fff;
     }
-    .top {
-        display:flex;
-        justify-content: center;
+    h1 {
+        color: #FCFCFC;
+        line-height: 62.5px;
+        margin-top: 10px;
     }
 }
