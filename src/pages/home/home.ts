@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 import * as SendBirdCall from 'sendbird-calls';
 import { UtilityService } from '../../providers/utility/utility';
 
@@ -10,7 +10,7 @@ import { UtilityService } from '../../providers/utility/utility';
 
 export class HomePage {
 
-  constructor(public navCtrl: NavController, private utilityService:UtilityService, private alertController:AlertController) { 
+  constructor(public navCtrl: NavController, private utilityService:UtilityService) { 
   } 
 
   // KIOSK MODE SETTINGS

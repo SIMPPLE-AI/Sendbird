@@ -7,13 +7,12 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation';
 import { UtilityService } from '../providers/utility/utility';
 import * as SendBirdCall from 'sendbird-calls';
 import { LoginPage } from '../pages/login/login';
-import { HomePage } from '../pages/home/home';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
-  rootPage:any = HomePage;
+  rootPage:any = LoginPage;
 
   authOption = { userId: 'user2', accessToken: '' };
   
@@ -25,80 +24,78 @@ export class MyApp {
       splashScreen.hide();
 
       // HIDE NAVIGATION BAR
-      let autoHide: boolean = true;
-      navigationbar.setUp(autoHide);
-      console.log('navigation bar hidden');
+      navigationbar.setUp(true);
 
       // SCREEN ORIENTATION LOCK
-      // screenOrientation.lock(screenOrientation.ORIENTATIONS.PORTRAIT);
+      screenOrientation.lock(screenOrientation.ORIENTATIONS.PORTRAIT);
     })
 
     // SENDBIRD INIT & AUTHENTICATE
-    // this.events.subscribe('init', (data) => {
-    //   if (data != null){
-    //     console.log(data);
-    //     // this.authOption.userId = data;
-    //     SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
-    //     this.registSendBirdEventHandler();
-    //     SendBirdCall.authenticate(this.authOption, (result, error) => {
-    //       if (error) {
-    //         alert("Authentication Error. Please try again."); 
-    //       }
-    //       else {
-    //         console.log('AUTHENTICATION SUCCESSFUL');
-    //         SendBirdCall.connectWebSocket()
-    //         .then(/* Succeeded to connect */)
-    //         .catch(/* Failed to connect */);
-    //       }
-    //     });
-    //   }
-    // })
+    this.events.subscribe('init', (data) => {
+      if (data != null){
+        console.log(data);
+        // this.authOption.userId = data;
+        SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
+        this.registSendBirdEventHandler();
+        SendBirdCall.authenticate(this.authOption, (result, error) => {
+          if (error) {
+            alert("Authentication Error. Please try again."); 
+          }
+          else {
+            console.log('AUTHENTICATION SUCCESSFUL');
+            SendBirdCall.connectWebSocket()
+            .then(/* Succeeded to connect */)
+            .catch(/* Failed to connect */);
+          }
+        });
+      }
+    })
   } 
 
   // RECEIVE A CALL
-  // registSendBirdEventHandler(){
-  //   let uniqueid = "unique-id";
-  //   let acceptParams = {
-  //     callOption: {
-  //       remoteMediaView: <HTMLMediaElement>document.getElementById('remote_video_element_id'),
-  //       localMediaView: <HTMLMediaElement>document.getElementById('local_video_element_id'),
-  //       audioEnabled: true,
-  //       videoEnabled: true
-  //     },
-  //     holdActiveCall: true
-  //   };
+  registSendBirdEventHandler(){
+    let uniqueid = "unique-id";
+    let acceptParams = {
+      callOption: {
+        remoteMediaView: <HTMLMediaElement>document.getElementById('remote_video_element_id'),
+        localMediaView: <HTMLMediaElement>document.getElementById('local_video_element_id'),
+        audioEnabled: true,
+        videoEnabled: true
+      },
+      holdActiveCall: true
+    };
   
-  //   SendBirdCall.addListener(uniqueid, {
-  //     onRinging: (call) => {
-  //       if (!call.isEnded){
-  //         call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
-  //       }
+    SendBirdCall.addListener(uniqueid, {
+      onRinging: (call) => {
+        if (!call.isEnded){
+          call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
+        }
 
-  //       // INTERFACE SETTINGS
-  //       // document.getElementById('btnDirectCall').setAttribute('hidden','true');
-  //       document.getElementById('btnVideoCall').setAttribute('hidden','true');
-  //       // document.getElementById('btnAccept').removeAttribute('hidden');
-  //       // document.getElementById('btnEnd').removeAttribute('hidden');
-  //       // AUTO ACCEPT A CALL
-  //       call.accept(acceptParams);
-  //       // CHECK IF INCOMING CALL IS A VOICE CALL
-  //       /*if (!call.isVideoCall) {
-  //         // ENABLE VIDEO CALL
-  //         acceptParams.callOption.videoEnabled = false;
-  //       } */
+        // INTERFACE SETTINGS
+        // document.getElementById('btnDirectCall').setAttribute('hidden','true');
+        document.getElementById('btnVideoCall').setAttribute('hidden','true');
+        // document.getElementById('btnAccept').removeAttribute('hidden');
+        // document.getElementById('btnEnd').removeAttribute('hidden');
+        // AUTO ACCEPT A CALL
+        call.accept(acceptParams);
+        // CHECK IF INCOMING CALL IS A VOICE CALL
+        /*if (!call.isVideoCall) {
+          // ENABLE VIDEO CALL
+          acceptParams.callOption.videoEnabled = false;
+        } */
 
-  //       // MANUALLY ACCEPT A CALL
-  //       /* document.getElementById('btnAccept').onclick = function(){        
-  //         call.accept(acceptParams);
-  //         // document.getElementById('btnAccept').setAttribute('hidden','true');
-  //       } */
+        // MANUALLY ACCEPT A CALL
+        /* document.getElementById('btnAccept').onclick = function(){        
+          call.accept(acceptParams);
+          // document.getElementById('btnAccept').setAttribute('hidden','true');
+        } */
 
-  //       // END CALL
-  //       /*document.getElementById('btnEnd').onclick = function(){
-  //         call.end();
-  //       } */
-  //       this.utilityService.registCallEvent(call);
-  //     }
-  //   });
-  // }
+        // END CALL
+        /*document.getElementById('btnEnd').onclick = function(){
+          call.end();
+        } */
+        this.utilityService.registCallEvent(call);
+      }
+    });
+  }
 }
