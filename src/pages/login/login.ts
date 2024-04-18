@@ -20,7 +20,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 })
 export class LoginPage {
 
-  log = {Username: '', Password: ''};
+  log = {Username: 'user3', Password: 'simpple123'};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
     
@@ -36,24 +36,29 @@ export class LoginPage {
     // DISPLAY LOADER
     let loader = this.loadingController.create({
       content: "Loading",
-      duration : 2000
+      duration : 5000
     });
     loader.present();
 
     // VERIFY USER WITH DATABASE
     this.api(this.log.Username, this.log.Password);
+
+    // this.navCtrl.setRoot(HomePage);
+    // this.events.publish('init', this.log.Username);
   }
 
   api(Username, Password){
-     let headers = new HttpHeaders();
-     headers.append('Access-Control-Allow-Origin' , '*');
-     headers.append('Content-Type', 'application/json');
-     headers.append('Authorization', 'my-auth-token');
-     let username = Username;      // 'user2'
-     let password = Password;      // 'simpple123'
+    const headers = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Authorization': 'my-auth-token',
+        'Access-Control-Allow-Origin': '*'
+      })
+    };
+
      let params = {
-         "username":username,
-         "password":password
+         "username":Username, // 'user3'
+         "password":Password  // 'simpple123'
      };
      console.log(params);
      const url = "http://192.168.100.151";
@@ -64,12 +69,15 @@ export class LoginPage {
          this.storage.set("login", this.log);
          this.navCtrl.setRoot(HomePage);
          // TRIGGER EVENT HANDLER INIT AND AUTHENTICATE SENDBIRD 
-         this.events.publish('init', this.log.Username);
+         this.events.publish('init', Username);
        }
        else{
          console.log("Invalid credentials");
+         alert("Invalid Credentials, please try again.")
        }
-     });
+     }, error => {
+      console.log(error);
+     })
   }
 
   ionViewDidLoad() {

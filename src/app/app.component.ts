@@ -14,7 +14,7 @@ import { LoginPage } from '../pages/login/login';
 export class MyApp {
   rootPage:any = LoginPage;
 
-  authOption = { userId: 'user2', accessToken: '' };
+  authOption = { userId: '', accessToken: '' };
   
   constructor(screenOrientation:ScreenOrientation, navigationbar: NavigationBar, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private utilityService: UtilityService, public events:Events) {
     platform.ready().then(() => {
@@ -34,7 +34,7 @@ export class MyApp {
     this.events.subscribe('init', (data) => {
       if (data != null){
         console.log(data);
-        // this.authOption.userId = data;
+        this.authOption.userId = data;
         SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
         this.registSendBirdEventHandler();
         SendBirdCall.authenticate(this.authOption, (result, error) => {
@@ -48,6 +48,14 @@ export class MyApp {
             .catch(/* Failed to connect */);
           }
         });
+      }
+    })
+
+    // RETURN TO LOGIN PAGE AFTER LOGOUT
+    this.events.subscribe('logout', (data) => {
+      if (data) {
+        console.log('Logged Out Success');
+        this.rootPage = LoginPage;
       }
     })
   } 
@@ -73,7 +81,7 @@ export class MyApp {
 
         // INTERFACE SETTINGS
         // document.getElementById('btnDirectCall').setAttribute('hidden','true');
-        document.getElementById('btnVideoCall').setAttribute('hidden','true');
+        // document.getElementById('btnVideoCall').setAttribute('hidden','true');
         // document.getElementById('btnAccept').removeAttribute('hidden');
         // document.getElementById('btnEnd').removeAttribute('hidden');
         // AUTO ACCEPT A CALL

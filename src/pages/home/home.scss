@@ -2,6 +2,44 @@ page-home {
     ion-content {
         background-image: url(../../assets/imgs/background_blue.png);
     }
+
+    ion-slides {
+        background-image: url(../../assets/imgs/slider_background.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 80%;
+        padding-top: 8px;
+    }
+
+    .local {
+        top:10px;
+        left:10px;
+        width:25%;
+    }
+
+    .remote{
+        height:100%;
+        width:100%;
+        object-fit: fill;
+    }
+
+    .cancel {
+        background-image: url(../../assets/imgs/slider_white_background.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        width: 80%;
+        padding-top: 8px;
+    }
+
+    .slider_text {
+        display: flex; 
+        justify-content: center; 
+        padding-left: 10px; 
+        padding-top: 3.5%; 
+        font-size: 32px;
+        color: #FCFCFC;
+    }
+
     h1 {
         color: #FCFCFC;
         line-height: 62.5px;

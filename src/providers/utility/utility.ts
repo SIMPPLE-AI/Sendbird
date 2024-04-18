@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as SendBirdCall from 'sendbird-calls';
 import { Events, AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
 
 // PARAMETERS
 declare let KioskPlugin: any;
@@ -17,7 +18,7 @@ let timeoutRef = null;
 @Injectable()
 export class UtilityService {
 
-  constructor(private alertController:AlertController, public http: HttpClient, public events: Events) {
+  constructor(private storage:Storage, private alertController:AlertController, public http: HttpClient, public events: Events) {
     console.log('Hello UtilityProvider Provider');
   }
 
@@ -37,13 +38,14 @@ export class UtilityService {
       
       // CREATE POP UP TO REQUEST FOR LOGOUT PASSWORD
       let alertControl = this.alertController.create({
-        title: '<div style="text-align: center;">Exit</div>',
+        title: '<div style="text-align: center;">Logout</div>',
         cssClass: 'exitAlert',
+        
         inputs: [
           {
             name: 'password',
             placeholder: 'Password',
-            type: 'password'
+            type: 'password',
           }
         ],
         buttons: [
@@ -57,12 +59,23 @@ export class UtilityService {
           {
             text: 'Exit',
             handler: data => {
-              if (data['password'] === "simpple") {
-                // logged in!
-                KioskPlugin.exitKiosk();	// REQUIRES ACTION BUTTON TO USE
+              if (data['password'] === "1") {
+                KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
-                // invalid login
+                return false;
+              }
+            }
+          },
+          {
+            text: 'Logout',
+            handler: data => {
+              if (data['password'] === "1") {
+                this.storage.remove("login");   // Remove data
+                this.events.publish('logout', true);
+                KioskPlugin.exitKiosk();
+              } else {
+                alert("Wrong Password");
                 return false;
               }
             }
@@ -81,69 +94,28 @@ export class UtilityService {
 
   /* CALL EVENT HANDLER */
   registCallEvent(call:SendBirdCall.DirectCall){
+
+    // DISPLAY VIDEO
+    document.getElementById('videocall').removeAttribute('hidden');
+    document.getElementById('overallpage').setAttribute('hidden','true');
+
+    call.setLocalMediaView(<HTMLMediaElement>document.getElementById('local_video_element_id'));
+    var local_video = <HTMLMediaElement>document.getElementById('local_video_element_id');
+    local_video.muted = true;
+
     call.onEstablished = (call) => {
       console.log("Call is Established");
-      // INTERFACE SETTINGS
-      // document.getElementById('btnDirectCall').setAttribute('hidden','true');
-      document.getElementById('btnVideoCall').setAttribute('hidden','true');
-      // document.getElementById('btnAccept').setAttribute('hidden','true');
-      // document.getElementById('btnEnd').removeAttribute('hidden');
-      // CHECK IF CALL IS A VIDEO CALL
-      if (call.isVideoCall){
-        // INTERFACE SETTINGS
-        document.getElementById('local_video_element_id').removeAttribute('hidden');
-        document.getElementById('remote_video_element_id').removeAttribute('hidden');
-        
-        // VIDEO ELEMENT
-        call.setLocalMediaView(<HTMLMediaElement>document.getElementById('local_video_element_id'));
-        call.setRemoteMediaView(<HTMLMediaElement>document.getElementById('remote_video_element_id'));
-        var local_video = <HTMLMediaElement>document.getElementById('local_video_element_id');
-        local_video.muted = true;
-      } else {
-        // AUDIO ELEMENT [ONLY REQUIRED FOR VOICE CALL]
-        /* call.setLocalMediaView(<HTMLMediaElement>document.getElementById('local_audio_element_id'));
-        call.setRemoteMediaView(<HTMLMediaElement>document.getElementById('remote_audio_element_id')); */
-      }
-
-      // MUTE || UNMUTE
-      /* document.getElementById('muteSwitch').onclick = function(){
-        var muteSwitch: HTMLInputElement = document.getElementById('muteSwitch') as HTMLInputElement;
-        if (muteSwitch.checked) {
-          call.muteMicrophone();
-        }
-        else {
-          call.unmuteMicrophone();
-        }
-      } */
-
-      // ON || OFF CAMERA
-      /* document.getElementById('videoSwitch').onclick = function(){
-        var videoSwitch: HTMLInputElement = document.getElementById('videoSwitch') as HTMLInputElement;
-        if (videoSwitch.checked) {
-          call.startVideo();
-        }
-        else {
-          call.stopVideo();
-        }
-      }*/
+      // VIDEO ELEMENT
+      call.setRemoteMediaView(<HTMLMediaElement>document.getElementById('remote_video_element_id'));
     }
   
     call.onEnded = (call) => {
       console.log("Call Ended");
-      // INTERFACE SETTINGS
-      // var muteSwitch: HTMLInputElement = document.getElementById('muteSwitch') as HTMLInputElement;
-      // muteSwitch.checked = false;
-      // var videoSwitch: HTMLInputElement = document.getElementById('videoSwitch') as HTMLInputElement;
-      // videoSwitch.checked = true; 
-
-      // document.getElementById('btnEnd').setAttribute('hidden','true');
-      // document.getElementById('btnAccept').setAttribute('hidden','true');
-
-      // document.getElementById('btnDirectCall').removeAttribute('hidden');
-      document.getElementById('btnVideoCall').removeAttribute('hidden');
-
-      document.getElementById('local_video_element_id').setAttribute('hidden','true');
-      document.getElementById('remote_video_element_id').setAttribute('hidden','true');
+      document.getElementById('loadcallpage').setAttribute('hidden','true');
+      document.getElementById('chargingpage').removeAttribute('hidden');
+      document.getElementById('overallpage').removeAttribute('hidden');
+      document.getElementById('videocall').setAttribute('hidden','true');
+      this.events.publish('CallTriggerEnabler', true);
     };
   
     call.onRemoteAudioSettingsChanged = (call) => {

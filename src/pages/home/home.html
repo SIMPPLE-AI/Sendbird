@@ -6,17 +6,17 @@
 -->
 
 <ion-content class="ion-content">
-  <div class="overallpage">  
+  <div id="overallpage" style="padding-top: 5%;">  
     <!-- CLIENT LOGO -->
     <div style="display: flex; justify-content: center; padding-top: 5%;">
-      <ion-row style="padding-top: 5%;">
-        <img style="display:flex; justify-content: center; width: 60.5px; height: 62.5px; display:flex" src="../../assets/imgs/client_name.png"/>
-        <h1 style="padding-left: 8px; font-size: 32px;">Client_Name</h1>
+      <ion-row>
+        <img style="display:flex; justify-content: center; padding-top: 5%; width: 90.5px; height: 92.5px;" src="../../assets/imgs/client_name.png"/>
       </ion-row>
+      <h1 style="display:flex; justify-content: center; padding-left: 8px; font-size: 40px;">Client_Name</h1>
     </div>
 
     <!-- CHARGING PAGE -->
-    <div class="chargingpage">
+    <div id="chargingpage">
       <!-- CHARGING TEXT -->
       <div style="display: flex; justify-content: center; padding-top: 5%;">
         <img style="width: 70%; height: 7%;" src="../../assets/imgs/charging_text.png"/>
@@ -28,23 +28,18 @@
       </div>
 
       <!-- SLIDE TO CALL -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <ion-item-sliding>
-          <ion-item-options side="start">
-            <ion-item-option color="success">
-              <ion-icon slot="icon-only" name="archive"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-      
-          <ion-item>
-            <ion-label>Sliding Item with Icons Only</ion-label>
-          </ion-item>
-        </ion-item-sliding>
+      <div style="display: flex; justify-content: center; padding-top: 5%;" >
+        <ion-slides (ionSlideDrag)="onSlider()">
+          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/call_slider.png"/>
+          <div class="slider_text">
+            Slide for Assistance
+          </div>
+        </ion-slides>
       </div>
     </div>
 
     <!-- PATROLLING PAGE -->
-    <div class="patrolpage" hidden="true">
+    <div id="patrolpage" hidden="true">
       <!-- PATROLLING TEXT -->
       <div style="display: flex; justify-content: center; padding-top: 5%;">
         <img style="width: 70%; height: 7%;" src="../../assets/imgs/Patrolling in Progress.png"/>
@@ -56,13 +51,18 @@
       </div>
 
       <!-- SLIDE TO CALL -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <ion-range style="width: 70%; border-radius: 20px;"></ion-range>
+      <div style="display: flex; justify-content: center; padding-top: 5%;" >
+        <ion-slides (ionSlideDrag)="onSlider()">
+          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/call_slider.png"/>
+          <div class="slider_text">
+            Slide for Assistance
+          </div>
+        </ion-slides>
       </div>
     </div>
 
     <!-- LOAD CALL PAGE -->
-    <div class="loadcallpage" hidden="true">
+    <div id="loadcallpage" hidden="true">
       <!-- LOAD CALL TEXT -->
       <div style="display: flex; justify-content: center; padding-top: 5%;">
         <img style="width: 70%; height: 7%;" src="../../assets/imgs/Getting Assistance in...png"/>
@@ -70,12 +70,19 @@
 
       <!-- LOAD CALL COUNT -->
       <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Count_3.png"/>
+        <img id="3" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_3.png"/>
+        <img id="2" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_2.png" hidden="true"/>
+        <img id="1" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_1.png" hidden="true"/>
       </div>
 
       <!-- SLIDE TO CANCEL -->
-      <div style="display: flex; justify-content: center; padding-top: 10%;">
-        <ion-range style="width: 70%; border-radius: 20px;"></ion-range>
+      <div style="display: flex; justify-content: center; padding-top: 5%;" >
+        <ion-slides class="cancel" (ionSlideDrag)="onCancel()">
+          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/cancel_slider.png"/>
+          <div class="slider_text" style="color: black">
+            Slide to Cancel
+          </div>
+        </ion-slides>
       </div>
     </div>
     
@@ -88,8 +95,9 @@
     <img id="exitlogo" style="height:45px; position: fixed; bottom: 16px; right: 40px;" src="../../assets/imgs/Bottom_Right_Logo.png" (click)="exit()"/>
   </div>
 
-  <div class="videocall" hidden="true">
-    <video id="local_video_element_id" style="width: 100; height: 100%;" playsinline autoplay controls muted="true"></video>
-  <video id="remote_video_element_id" style="width: 45%;" playsinline autoplay="true"hidden="true"></video>
+  <!-- IN CALL PAGE -->
+  <div id="videocall" hidden="true" style="position:relative; flex-grow: 1;">
+    <video class="local" id="local_video_element_id" playsinline autoplay controls muted="true"></video>
+    <video class="remote" id="remote_video_element_id" playsinline autoplay="true"></video>
   </div>
 </ion-content>
