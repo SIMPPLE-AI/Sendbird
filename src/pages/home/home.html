@@ -6,6 +6,7 @@
 -->
 
 <ion-content class="ion-content">
+
   <div id="overallpage" style="padding-top: 5%;">  
     <!-- CLIENT LOGO -->
     <div style="display: flex; justify-content: center; padding-top: 5%;">
@@ -69,10 +70,9 @@
       </div>
 
       <!-- LOAD CALL COUNT -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img id="3" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_3.png"/>
-        <img id="2" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_2.png" hidden="true"/>
-        <img id="1" style="width: 70%; height: 7%;" src="../../assets/imgs/Count_1.png" hidden="true"/>
+      <div style="display: flex; justify-content: center; padding-top: 5%; ">
+        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Count.png"/>
+        <h2>{{countdown}}</h2>
       </div>
 
       <!-- SLIDE TO CANCEL -->
@@ -96,8 +96,8 @@
   </div>
 
   <!-- IN CALL PAGE -->
-  <div id="videocall" hidden="true" style="position:relative; flex-grow: 1;">
-    <video class="local" id="local_video_element_id" playsinline autoplay controls muted="true"></video>
-    <video class="remote" id="remote_video_element_id" playsinline autoplay="true"></video>
+  <div class="videocall" id="videocall" hidden="true" style="flex-grow: 1; display: flex; justify-content: center;">
+    <video class="remote" id="remote_video_element_id" playsinline autoplay="true"></video> 
+    <video class="local" id="local_video_element_id" playsinline autoplay controls hidden="true" muted="true"></video>
   </div>
 </ion-content>

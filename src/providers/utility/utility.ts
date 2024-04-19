@@ -98,15 +98,22 @@ export class UtilityService {
     // DISPLAY VIDEO
     document.getElementById('videocall').removeAttribute('hidden');
     document.getElementById('overallpage').setAttribute('hidden','true');
+    
+    call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
+    call.setLocalMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
 
-    call.setLocalMediaView(<HTMLMediaElement>document.getElementById('local_video_element_id'));
-    var local_video = <HTMLMediaElement>document.getElementById('local_video_element_id');
+    var local_video = <HTMLVideoElement>document.getElementById('local_video_element_id');
+    var remote_video = <HTMLVideoElement>document.getElementById('remote_video_element_id');
     local_video.muted = true;
+    remote_video.muted = true;
+
 
     call.onEstablished = (call) => {
       console.log("Call is Established");
-      // VIDEO ELEMENT
-      call.setRemoteMediaView(<HTMLMediaElement>document.getElementById('remote_video_element_id'));
+      document.getElementById('local_video_element_id').removeAttribute('hidden');
+      call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
+      call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
+      remote_video.muted = false;
     }
   
     call.onEnded = (call) => {

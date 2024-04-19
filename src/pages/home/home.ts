@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ApplicationRef } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 import * as SendBirdCall from 'sendbird-calls';
 import { UtilityService } from '../../providers/utility/utility';
@@ -13,8 +13,11 @@ import { UtilityService } from '../../providers/utility/utility';
 export class HomePage {
 
   callTriggered = true;
+  callCancelled = false;
+  cancelCallTrigger = false;
+  public countdown = 3;
 
-  constructor(private events:Events, public navCtrl: NavController, private utilityService:UtilityService) { 
+  constructor(public appRef:ApplicationRef, private events:Events, public navCtrl: NavController, private utilityService:UtilityService) { 
     this.events.subscribe('CallTriggerEnabler', (data) => {
       this.callTriggered = data;
     })
@@ -28,7 +31,7 @@ export class HomePage {
   // DIRECT CALL | VOICE CALL
   dialParams:SendBirdCall.DialParams = {
     userId: 'user4',
-    isVideoCall: false,
+    isVideoCall: true,
     callOption: {
       audioEnabled: true,
       videoEnabled: true
@@ -62,44 +65,49 @@ export class HomePage {
   */
 
   async onSlider() {
-    await this.delay(300);
     if (this.callTriggered){
       this.callTriggered = false;
       // CHANGE PAGE
       document.getElementById('chargingpage').setAttribute('hidden','true');
       document.getElementById('loadcallpage').removeAttribute('hidden');
       
+      console.log('slide pls')
       // SHOW COUNTDOWN
-      await this.delay(1000);
-      document.getElementById('3').setAttribute('hidden','true');
-      document.getElementById('2').removeAttribute('hidden');
-      await this.delay(1000);
-      document.getElementById('2').setAttribute('hidden','true');
-      document.getElementById('1').removeAttribute('hidden');
+      this.countdown = 3;
+      // CHECK IF USER CANCELLED THE CALL
+      this.events.subscribe('CancelCallTrigger', (data) => {
+        if (data) {
+          this.cancelCallTrigger = true;
+        }
+      });
+
+      while (this.countdown != 1) {
+        await this.delay(1000);
+        this.countdown--;     // decrease counter by 1
+        this.appRef.tick();   // refresh html page to update value
+      }
 
       // MAKE CALL
-      await this.delay(1000);
-      this.onVideoCall();
-
-      // RESEST COUNTDOWN NUMBER
-      await this.delay(500);
-      document.getElementById('1').setAttribute('hidden','true');
-      document.getElementById('3').removeAttribute('hidden');
+      if (!this.cancelCallTrigger){
+        this.onVideoCall();
+      }
+      else {
+        document.getElementById('loadcallpage').setAttribute('hidden','true');
+        document.getElementById('chargingpage').removeAttribute('hidden');
+      }
     }
   }
 
   // CANCEL CALL INITIATE
   onCancel() {
-  //   if (this.callCancelTrigger) {
-  //     this.events.publish('CancelCallTrigger', true);
-  //     this.callCancelTrigger = false;
-  //   }
+    if (this.callCancelled) {
+      this.events.publish('CancelCallTrigger', true);
+      this.callCancelled = false;
+    }
   }
 
   // VIDEO CALL 
   onVideoCall(){
-    this.dialParams.isVideoCall = true;
-    this.dialParams.callOption.videoEnabled = true;
     SendBirdCall.dial(this.dialParams, (call, error) => {
       if (error) {
         alert("Video Call Failed");

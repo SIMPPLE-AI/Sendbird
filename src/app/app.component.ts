@@ -61,12 +61,12 @@ export class MyApp {
   } 
 
   // RECEIVE A CALL
-  registSendBirdEventHandler(){
+  async registSendBirdEventHandler(){
     let uniqueid = "unique-id";
     let acceptParams = {
       callOption: {
         remoteMediaView: <HTMLMediaElement>document.getElementById('remote_video_element_id'),
-        localMediaView: <HTMLMediaElement>document.getElementById('local_video_element_id'),
+        localMediaView:  <HTMLMediaElement>document.getElementById('local_video_element_id'),
         audioEnabled: true,
         videoEnabled: true
       },
@@ -86,6 +86,7 @@ export class MyApp {
         // document.getElementById('btnEnd').removeAttribute('hidden');
         // AUTO ACCEPT A CALL
         call.accept(acceptParams);
+        document.getElementById('local_video_element_id').removeAttribute('hidden');
         // CHECK IF INCOMING CALL IS A VOICE CALL
         /*if (!call.isVideoCall) {
           // ENABLE VIDEO CALL
