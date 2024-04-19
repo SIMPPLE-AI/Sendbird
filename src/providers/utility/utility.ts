@@ -59,7 +59,7 @@ export class UtilityService {
           {
             text: 'Exit',
             handler: data => {
-              if (data['password'] === "1") {
+              if (data['password'] === "simpple") {
                 KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
@@ -70,10 +70,10 @@ export class UtilityService {
           {
             text: 'Logout',
             handler: data => {
-              if (data['password'] === "1") {
+              if (data['password'] === "simpple") {
                 this.storage.remove("login");   // Remove data
-                this.events.publish('logout', true);
-                KioskPlugin.exitKiosk();
+                this.events.publish('logout', true);  // Trigger event to say that user has logged out
+                // KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
                 return false;
@@ -88,7 +88,7 @@ export class UtilityService {
       timeoutRef = setTimeout(() => {
         clickCount = 0;
         console.log("Timeout reached. Resetting click count.");
-      }, 2000);
+      }, 1500);
     }
   }
 
@@ -98,15 +98,22 @@ export class UtilityService {
     // DISPLAY VIDEO
     document.getElementById('videocall').removeAttribute('hidden');
     document.getElementById('overallpage').setAttribute('hidden','true');
+    
+    call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
+    call.setLocalMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
 
-    call.setLocalMediaView(<HTMLMediaElement>document.getElementById('local_video_element_id'));
-    var local_video = <HTMLMediaElement>document.getElementById('local_video_element_id');
+    var local_video = <HTMLVideoElement>document.getElementById('local_video_element_id');
+    var remote_video = <HTMLVideoElement>document.getElementById('remote_video_element_id');
     local_video.muted = true;
+    remote_video.muted = true;
+
 
     call.onEstablished = (call) => {
       console.log("Call is Established");
-      // VIDEO ELEMENT
-      call.setRemoteMediaView(<HTMLMediaElement>document.getElementById('remote_video_element_id'));
+      document.getElementById('local_video_element_id').removeAttribute('hidden');
+      call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
+      call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
+      remote_video.muted = false;
     }
   
     call.onEnded = (call) => {

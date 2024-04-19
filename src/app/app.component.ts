@@ -50,23 +50,15 @@ export class MyApp {
         });
       }
     })
-
-    // RETURN TO LOGIN PAGE AFTER LOGOUT
-    this.events.subscribe('logout', (data) => {
-      if (data) {
-        console.log('Logged Out Success');
-        this.rootPage = LoginPage;
-      }
-    })
   } 
 
   // RECEIVE A CALL
-  registSendBirdEventHandler(){
+  async registSendBirdEventHandler(){
     let uniqueid = "unique-id";
     let acceptParams = {
       callOption: {
         remoteMediaView: <HTMLMediaElement>document.getElementById('remote_video_element_id'),
-        localMediaView: <HTMLMediaElement>document.getElementById('local_video_element_id'),
+        localMediaView:  <HTMLMediaElement>document.getElementById('local_video_element_id'),
         audioEnabled: true,
         videoEnabled: true
       },
@@ -79,29 +71,10 @@ export class MyApp {
           call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
         }
 
-        // INTERFACE SETTINGS
-        // document.getElementById('btnDirectCall').setAttribute('hidden','true');
-        // document.getElementById('btnVideoCall').setAttribute('hidden','true');
-        // document.getElementById('btnAccept').removeAttribute('hidden');
-        // document.getElementById('btnEnd').removeAttribute('hidden');
         // AUTO ACCEPT A CALL
         call.accept(acceptParams);
-        // CHECK IF INCOMING CALL IS A VOICE CALL
-        /*if (!call.isVideoCall) {
-          // ENABLE VIDEO CALL
-          acceptParams.callOption.videoEnabled = false;
-        } */
+        document.getElementById('local_video_element_id').removeAttribute('hidden');
 
-        // MANUALLY ACCEPT A CALL
-        /* document.getElementById('btnAccept').onclick = function(){        
-          call.accept(acceptParams);
-          // document.getElementById('btnAccept').setAttribute('hidden','true');
-        } */
-
-        // END CALL
-        /*document.getElementById('btnEnd').onclick = function(){
-          call.end();
-        } */
         this.utilityService.registCallEvent(call);
       }
     });
