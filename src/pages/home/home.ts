@@ -15,6 +15,7 @@ export class HomePage {
   progress = 0;
   callCountDownInterval:any;
   slideToCancelCallProgress = 0;
+  countdown = 3;
 
   constructor(private events:Events, public navCtrl: NavController, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
   }
@@ -34,7 +35,7 @@ export class HomePage {
   // DIRECT CALL | VOICE CALL
   dialParams:SendBirdCall.DialParams = {
     userId: 'user2',
-    isVideoCall: false,
+    isVideoCall: true,
     callOption: {
       audioEnabled: true,
       videoEnabled: true
@@ -96,17 +97,16 @@ export class HomePage {
       document.getElementById('chargingpage').setAttribute('hidden','true');
       document.getElementById('loadcallpage').removeAttribute('hidden');
 
-      // Countdown timer for 3 seconds
-      let count = 3;
-      const timerElement = document.getElementById('3');
-      timerElement.innerText = `${count}`;
+      // const timerElement = document.getElementById('3');
+      // timerElement.innerText = `${count}`;
       this.callCountDownInterval = setInterval(() => {
-        count--;
+        this.countdown --;
         console.log("Updating timerElement Text");
-        if (count === 0) {
-          const timerElement = document.getElementById('3');
+        if (this.countdown === 0) {
+          // const timerElement = document.getElementById('3');
           // Reset back to 3 seconds
-          timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
+          // timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
+          this.countdown = 3;
 
           clearInterval(this.callCountDownInterval);
 
@@ -115,7 +115,7 @@ export class HomePage {
           this.onVideoCall();
         }
         else{
-          timerElement.setAttribute("src","../../assets/imgs/Count_"+ count +".png");
+          // timerElement.setAttribute("src","../../assets/imgs/Count_"+ count +".png");
           if (this.changeRef && !(this.changeRef as ViewRef).destroyed) {
             this.changeRef.detectChanges();
           }
@@ -160,9 +160,11 @@ export class HomePage {
         document.getElementById('chargingpage').removeAttribute('hidden');
         document.getElementById('loadcallpage').setAttribute('hidden','true');
 
-        const timerElement = document.getElementById('3');
+        // const timerElement = document.getElementById('3');
         // Reset back to 3 seconds
-        timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
+        // timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
+
+        this.countdown = 3;
         // alert("Call cleared");
       }
       this.slideToCancelCallProgress = 0;
@@ -200,45 +202,50 @@ export class HomePage {
     return this.slideToCancelCallProgress * width;
   }
 
-  async onSlider() {
-    await this.delay(300);
-    if (this.callTriggered){
-      this.callTriggered = false;
-      // CHANGE PAGE
-      document.getElementById('chargingpage').setAttribute('hidden','true');
-      document.getElementById('loadcallpage').removeAttribute('hidden');
+  // async onSlider() {
+  //   if (this.callTriggered){
+  //     this.callTriggered = false;
+  //     // CHANGE PAGE
+  //     document.getElementById('chargingpage').setAttribute('hidden','true');
+  //     document.getElementById('loadcallpage').removeAttribute('hidden');
 
-      // SHOW COUNTDOWN
-      await this.delay(1000);
-      document.getElementById('3').setAttribute('hidden','true');
-      document.getElementById('2').removeAttribute('hidden');
-      await this.delay(1000);
-      document.getElementById('2').setAttribute('hidden','true');
-      document.getElementById('1').removeAttribute('hidden');
+  //     console.log('slide pls')
+  //     // SHOW COUNTDOWN
+  //     this.countdown = 3;
+  //     // CHECK IF USER CANCELLED THE CALL
+  //     this.events.subscribe('CancelCallTrigger', (data) => {
+  //       if (data) {
+  //         this.cancelCallTrigger = true;
+  //       }
+  //     });
 
-      // MAKE CALL
-      await this.delay(1000);
-      // this.onVideoCall();
+  //     while (this.countdown != 1) {
+  //       await this.delay(1000);
+  //       this.countdown--;     // decrease counter by 1
+  //       this.appRef.tick();   // refresh html page to update value
+  //     }
 
-      // RESEST COUNTDOWN NUMBER
-      await this.delay(500);
-      document.getElementById('1').setAttribute('hidden','true');
-      document.getElementById('3').removeAttribute('hidden');
-    }
-  }
-
-  // CANCEL CALL INITIATE
-  onCancel() {
-  //   if (this.callCancelTrigger) {
-  //     this.events.publish('CancelCallTrigger', true);
-  //     this.callCancelTrigger = false;
+  //     // MAKE CALL
+  //     if (!this.cancelCallTrigger){
+  //       this.onVideoCall();
+  //     }
+  //     else {
+  //       document.getElementById('loadcallpage').setAttribute('hidden','true');
+  //       document.getElementById('chargingpage').removeAttribute('hidden');
+  //     }
   //   }
-  }
+  // }
+
+  // // CANCEL CALL INITIATE
+  // onCancel() {
+  //   if (this.callCancelled) {
+  //     this.events.publish('CancelCallTrigger', true);
+  //     this.callCancelled = false;
+  //   }
+  // }
 
   // VIDEO CALL
   onVideoCall(){
-    this.dialParams.isVideoCall = true;
-    this.dialParams.callOption.videoEnabled = true;
     SendBirdCall.dial(this.dialParams, (call, error) => {
       if (error) {
         alert("Video Call Failed");
