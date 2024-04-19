@@ -20,10 +20,10 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 })
 export class LoginPage {
 
-  log = {Username: 'user3', Password: 'simpple123'};
+  log = {Username: 'user4', Password: 'simpple123'};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
-    
+
   }
 
   // Exit Kiosk
@@ -68,7 +68,7 @@ export class LoginPage {
          // SAVE CREDENTIALS
          this.storage.set("login", this.log);
          this.navCtrl.setRoot(HomePage);
-         // TRIGGER EVENT HANDLER INIT AND AUTHENTICATE SENDBIRD 
+         // TRIGGER EVENT HANDLER INIT AND AUTHENTICATE SENDBIRD
          this.events.publish('init', Username);
        }
        else{

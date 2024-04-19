@@ -6,7 +6,7 @@
 -->
 
 <ion-content class="ion-content">
-  <div id="overallpage" style="padding-top: 5%;">  
+  <div id="overallpage" style="padding-top: 5%;">
     <!-- CLIENT LOGO -->
     <div style="display: flex; justify-content: center; padding-top: 5%;">
       <ion-row>
@@ -29,12 +29,15 @@
 
       <!-- SLIDE TO CALL -->
       <div style="display: flex; justify-content: center; padding-top: 5%;" >
-        <ion-slides (ionSlideDrag)="onSlider()">
-          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/call_slider.png"/>
-          <div class="slider_text">
-            Slide for Assistance
+        <ion-item id="slideToCallActionBar" (pan)="onPanToCall($event)">
+          <div class="slideToCallActionBarContainer">
+            <div class="slideToCallActionBarContentContainer" [style.transform]="'translateX(' + getTranslateX() + 'px)'">
+              <img src="../../assets/imgs/call_slider.png"/>
+              <p class="slideToCallACtionBarText">Slide For Assistance</p>
+            </div>
           </div>
-        </ion-slides>
+        </ion-item>
+
       </div>
     </div>
 
@@ -54,9 +57,7 @@
       <div style="display: flex; justify-content: center; padding-top: 5%;" >
         <ion-slides (ionSlideDrag)="onSlider()">
           <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/call_slider.png"/>
-          <div class="slider_text">
-            Slide for Assistance
-          </div>
+          <div class="callSliderTextElement">Slide for Assistance</div>
         </ion-slides>
       </div>
     </div>
@@ -77,15 +78,18 @@
 
       <!-- SLIDE TO CANCEL -->
       <div style="display: flex; justify-content: center; padding-top: 5%;" >
-        <ion-slides class="cancel" (ionSlideDrag)="onCancel()">
-          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/cancel_slider.png"/>
-          <div class="slider_text" style="color: black">
-            Slide to Cancel
+        <ion-item id="slideToCancelActionBar" (pan)="onPanToCancel($event)">
+          <div class="slideToCancelBarContainer">
+            <div class="slideToCancelBarContentContainer" [style.transform]="'translateX(' + getSlideToCancelTranslateX() + 'px)'">
+              <img src="../../assets/imgs/cancel_slider.png"/>
+              <p class="slideToCancelActionBarText">Slide to Cancel</p>
+            </div>
           </div>
-        </ion-slides>
+        </ion-item>
       </div>
+
     </div>
-    
+
     <!-- WARNING TEXT -->
     <div style="display: flex; justify-content: center; padding-top: 3%;">
       <img style="width: 85%; height: 8.5%;" src="../../assets/imgs/warning_text.png"/>

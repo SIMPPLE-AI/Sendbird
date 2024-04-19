@@ -1,4 +1,56 @@
 page-home {
+    #slideToCallActionBar{
+      background-image: url(../../assets/imgs/slider_background.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      width: 80%;
+
+      .slideToCallActionBarContainer{
+        display:flex;
+
+        .slideToCallActionBarContentContainer{
+          display:flex;
+          align-items:center;
+
+          img{
+            height:80px;
+          }
+
+          p{
+            margin-left:15px;
+          }
+        }
+      }
+
+    }
+
+    #slideToCancelActionBar{
+      background-image: url(../../assets/imgs/slider_white_background.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color:transparent;
+      width: 80%;
+
+
+      .slideToCancelBarContainer{
+        display:flex;
+
+        .slideToCancelBarContentContainer{
+          display:flex;
+          align-items:center;
+
+          img{
+            height:80px;
+          }
+
+          p{
+            margin-left:15px;
+          }
+        }
+      }
+
+    }
     ion-content {
         background-image: url(../../assets/imgs/background_blue.png);
     }
@@ -25,19 +77,19 @@ page-home {
         display: none;
     }
 
-    .cancel {
-        background-image: url(../../assets/imgs/slider_white_background.png);
-        background-size: contain;
-        background-repeat: no-repeat;
-        width: 80%;
-        padding-top: 8px;
-    }
+    // .cancel {
+    //     background-image: url(../../assets/imgs/slider_white_background.png);
+    //     background-size: contain;
+    //     background-repeat: no-repeat;
+    //     width: 80%;
+    //     padding-top: 8px;
+    // }
 
     .slider_text {
-        display: flex; 
-        justify-content: center; 
-        padding-left: 10px; 
-        padding-top: 3.5%; 
+        display: flex;
+        justify-content: center;
+        padding-left: 10px;
+        padding-top: 3.5%;
         font-size: 32px;
         color: #FCFCFC;
     }
