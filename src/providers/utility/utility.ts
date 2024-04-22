@@ -35,12 +35,12 @@ export class UtilityService {
       clearTimeout(timeoutRef);
 
       console.log("Five clicks detected!");
-      
+
       // CREATE POP UP TO REQUEST FOR LOGOUT PASSWORD
       let alertControl = this.alertController.create({
         title: '<div style="text-align: center;">Logout</div>',
         cssClass: 'exitAlert',
-        
+
         inputs: [
           {
             name: 'password',
@@ -94,11 +94,10 @@ export class UtilityService {
 
   /* CALL EVENT HANDLER */
   registCallEvent(call:SendBirdCall.DirectCall){
-
     // DISPLAY VIDEO
     document.getElementById('videocall').removeAttribute('hidden');
     document.getElementById('overallpage').setAttribute('hidden','true');
-    
+
     call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
     call.setLocalMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
 
@@ -115,7 +114,7 @@ export class UtilityService {
       call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
       remote_video.muted = false;
     }
-  
+
     call.onEnded = (call) => {
       console.log("Call Ended");
       document.getElementById('loadcallpage').setAttribute('hidden','true');
@@ -124,7 +123,7 @@ export class UtilityService {
       document.getElementById('videocall').setAttribute('hidden','true');
       this.events.publish('CallTriggerEnabler', true);
     };
-  
+
     call.onRemoteAudioSettingsChanged = (call) => {
       if(call.isRemoteAudioEnabled){
         console.log(`Remote Audio unmuted`);
@@ -132,7 +131,7 @@ export class UtilityService {
         console.log(`Remote Audio muted`);
       }
     };
-  
+
     call.onRemoteVideoSettingsChanged = (call) => {
       if(call.isRemoteVideoEnabled){
         console.log(`Remote Video started`);

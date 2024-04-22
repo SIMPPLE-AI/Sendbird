@@ -6,23 +6,28 @@ page-home {
       background-color: transparent;
       width: 80%;
 
-      .slideToCallActionBarContainer{
-        display:flex;
+      .item-inner{
+        border:none;
 
-        .slideToCallActionBarContentContainer{
+        .slideToCallActionBarContainer{
           display:flex;
-          align-items:center;
 
-          img{
-            height:80px;
-          }
+          .slideToCallActionBarContentContainer{
+            display:flex;
+            align-items:center;
 
-          p{
-            margin-left:15px;
+            img{
+              height:80px;
+            }
+
+            .slideToCallActionBarText{
+              margin-left:15px;
+              font-weight:bold;
+              color:white;
+            }
           }
         }
       }
-
     }
 
     #slideToCancelActionBar{
@@ -32,20 +37,25 @@ page-home {
       background-color:transparent;
       width: 80%;
 
+      .item-inner{
+        border:none;
 
-      .slideToCancelBarContainer{
-        display:flex;
-
-        .slideToCancelBarContentContainer{
+        .slideToCancelBarContainer{
           display:flex;
-          align-items:center;
 
-          img{
-            height:80px;
-          }
+          .slideToCancelBarContentContainer{
+            display:flex;
+            align-items:center;
 
-          p{
-            margin-left:15px;
+            img{
+              height:80px;
+            }
+
+            .slideToCancelActionBarText{
+              margin-left:15px;
+              font-weight:bold;
+              color:red;
+            }
           }
         }
       }

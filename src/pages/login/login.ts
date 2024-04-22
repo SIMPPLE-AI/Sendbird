@@ -20,7 +20,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 })
 export class LoginPage {
 
-  log = {Username: 'user4', Password: 'simpple123'};
+  log = {Username: 'byeo_test', Password: 'simpple123'};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
 
@@ -41,10 +41,10 @@ export class LoginPage {
     loader.present();
 
     // VERIFY USER WITH DATABASE
-    // this.api(this.log.Username, this.log.Password);
+    this.api(this.log.Username, this.log.Password);
 
-    this.navCtrl.setRoot(HomePage);
-    this.events.publish('init', this.log.Username);
+    // this.navCtrl.setRoot(HomePage);
+    // this.events.publish('init', this.log.Username);
   }
 
   api(Username, Password){
@@ -61,7 +61,7 @@ export class LoginPage {
          "password":Password  // 'simpple123'
      };
      console.log(params);
-     const url = "http://192.168.100.151";
+     const url = "http://192.168.86.38";
      this.http.post(url + '/api/robotLogin',{headers: headers, params: params}).subscribe(data => {
        if(data['success']){
          console.log("Logged in");
