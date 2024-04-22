@@ -73,7 +73,7 @@ export class UtilityService {
               if (data['password'] === "1") {
                 this.storage.remove("login");   // Remove data
                 this.events.publish('logout', true);
-                KioskPlugin.exitKiosk();
+                // KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
                 return false;

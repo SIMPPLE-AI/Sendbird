@@ -28,16 +28,15 @@
       </div>
 
       <!-- SLIDE TO CALL -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;" >
+      <div style="display: flex; justify-content: center; padding-top: 3%;" >
         <ion-item id="slideToCallActionBar" (pan)="onPanToCall($event)">
           <div class="slideToCallActionBarContainer">
             <div class="slideToCallActionBarContentContainer" [style.transform]="'translateX(' + getTranslateX() + 'px)'">
-              <img src="../../assets/imgs/call_slider.png"/>
+              <img id="imgcall" src="../../assets/imgs/call_slider.png"/>
               <p class="slideToCallACtionBarText">Slide For Assistance</p>
             </div>
           </div>
         </ion-item>
-
       </div>
     </div>
 
@@ -52,14 +51,6 @@
       <div style="display: flex; justify-content: center; padding-top: 5%;">
         <img style="width: 40%; height: 4%;" src="../../assets/imgs/patrolling_robot.png"/>
       </div>
-
-      <!-- SLIDE TO CALL -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;" >
-        <ion-slides (ionSlideDrag)="onSlider()">
-          <img style="height: auto; width: 15%; padding-bottom: 10px; padding-left: 8px;" src="../../assets/imgs/call_slider.png"/>
-          <div class="callSliderTextElement">Slide for Assistance</div>
-        </ion-slides>
-      </div>
     </div>
 
     <!-- LOAD CALL PAGE -->
@@ -71,16 +62,16 @@
 
       <!-- LOAD CALL COUNT -->
       <div style="display: flex; justify-content: center; padding-top: 5%; ">
-        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Count.png"/>
+        <img style="width: 75%; height: 7.5%;" src="../../assets/imgs/Count.png"/>
         <h2 class="countdown">{{countdown}}</h2>
       </div>
 
       <!-- SLIDE TO CANCEL -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;" >
+      <div style="display: flex; justify-content: center; padding-top: 5.3%;" >
         <ion-item id="slideToCancelActionBar" (pan)="onPanToCancel($event)">
           <div class="slideToCancelBarContainer">
             <div class="slideToCancelBarContentContainer" [style.transform]="'translateX(' + getSlideToCancelTranslateX() + 'px)'">
-              <img src="../../assets/imgs/cancel_slider.png"/>
+              <img id="imgcancel" src="../../assets/imgs/cancel_slider.png"/>
               <p class="slideToCancelActionBarText">Slide to Cancel</p>
             </div>
           </div>

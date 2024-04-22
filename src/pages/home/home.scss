@@ -5,6 +5,10 @@ page-home {
       background-repeat: no-repeat;
       background-color: transparent;
       width: 80%;
+      
+      .item-inner {
+        border: none;
+      }
 
       .slideToCallActionBarContainer{
         display:flex;
@@ -12,13 +16,18 @@ page-home {
         .slideToCallActionBarContentContainer{
           display:flex;
           align-items:center;
+          width:fit-content;
 
           img{
-            height:80px;
+            top: 2%;
+            height:70px;
           }
 
           p{
             margin-left:15px;
+            font-size: 36px;
+            color: white;
+            font-family: DM Sans !important;
           }
         }
       }
@@ -32,6 +41,9 @@ page-home {
       background-color:transparent;
       width: 80%;
 
+      .item-inner{
+        border:none;
+      }
 
       .slideToCancelBarContainer{
         display:flex;
@@ -41,11 +53,14 @@ page-home {
           align-items:center;
 
           img{
-            height:80px;
+            height:70px;
           }
 
           p{
             margin-left:15px;
+            font-size: 36px;
+            color: red;
+            font-family: DM Sans !important;
           }
         }
       }
@@ -67,7 +82,7 @@ page-home {
         color: black;
         font-size: 130px;
         position: absolute;
-        padding-top: 21%;
+        padding-top: 23%;
     }
 
     .local {

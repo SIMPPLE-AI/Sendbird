@@ -20,7 +20,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 })
 export class LoginPage {
 
-  log = {Username: 'user4', Password: 'simpple123'};
+  log = {Username: '', Password: ''};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
 
@@ -33,20 +33,16 @@ export class LoginPage {
 
   // LOGIN TO DATABASE
   login() {
-    // DISPLAY LOADER
-    let loader = this.loadingController.create({
-      content: "Loading",
-      duration : 5000
-    });
-    loader.present();
-
     // VERIFY USER WITH DATABASE
     // this.api(this.log.Username, this.log.Password);
 
+    // UNCOMMENT THE CODE BELOW FOR TESTING WITHOUT CONNECTION TO DATABASE
     this.navCtrl.setRoot(HomePage);
     this.events.publish('init', this.log.Username);
+
   }
 
+  // API TO CONNECT TO DATABASE
   api(Username, Password){
     const headers = {
       headers: new HttpHeaders({

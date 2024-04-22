@@ -50,14 +50,6 @@ export class MyApp {
         });
       }
     })
-
-    // RETURN TO LOGIN PAGE AFTER LOGOUT
-    this.events.subscribe('logout', (data) => {
-      if (data) {
-        console.log('Logged Out Success');
-        this.rootPage = LoginPage;
-      }
-    })
   } 
 
   // RECEIVE A CALL
