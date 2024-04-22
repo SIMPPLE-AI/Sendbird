@@ -34,11 +34,11 @@ export class LoginPage {
   // LOGIN TO DATABASE
   login() {
     // VERIFY USER WITH DATABASE
-    // this.api(this.log.Username, this.log.Password);
+    this.api(this.log.Username, this.log.Password);
 
     // UNCOMMENT THE CODE BELOW FOR TESTING WITHOUT CONNECTION TO DATABASE
-    this.navCtrl.setRoot(HomePage);
-    this.events.publish('init', this.log.Username);
+    // this.navCtrl.setRoot(HomePage);
+    // this.events.publish('init', this.log.Username);
   }
 
   // API TO CONNECT TO DATABASE
@@ -85,12 +85,12 @@ export class LoginPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad LoginPage');
     // CHECK FOR STORED CREDENTIALS
-    // this.storage.get("login").then( (data)=> {
-    //   if (data) {
-    //     // VERIFY USER WITH DATABASE
-    //     this.api(data.Username,data.Password);
-    //   }
-    // });
+    this.storage.get("login").then( (data)=> {
+      if (data) {
+        // VERIFY USER WITH DATABASE
+        this.api(data.Username,data.Password);
+      }
+    });
   }
 }
 
