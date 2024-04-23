@@ -1,10 +1,16 @@
 page-home {
     #slideToCallActionBar{
-      background-image: url(../../assets/imgs/slider_background.png);
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-color: transparent;
+      // background-image: url(../../assets/imgs/slider_background.png);
+      // background-size: contain;
+      // background-repeat: no-repeat;
+      // background-color: transparent;
+      background-color:orange;
+      border-radius:50px;
       width: 80%;
+
+      .item-inner {
+        border: none;
+      }
 
       .slideToCallActionBarContainer{
         display:flex;
@@ -12,13 +18,17 @@ page-home {
         .slideToCallActionBarContentContainer{
           display:flex;
           align-items:center;
+          width:fit-content;
 
           img{
-            height:80px;
+            height:70px;
           }
 
           p{
             margin-left:15px;
+            font-size: 36px;
+            color: white;
+            font-family: DM Sans !important;
           }
         }
       }
@@ -26,12 +36,17 @@ page-home {
     }
 
     #slideToCancelActionBar{
-      background-image: url(../../assets/imgs/slider_white_background.png);
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-color:transparent;
+      // background-image: url(../../assets/imgs/slider_white_background.png);
+      // background-size: contain;
+      // background-repeat: no-repeat;
+      // background-color:transparent;
+      background-color:white;
+      border-radius:50px;
       width: 80%;
 
+      .item-inner{
+        border:none;
+      }
 
       .slideToCancelBarContainer{
         display:flex;
@@ -41,11 +56,14 @@ page-home {
           align-items:center;
 
           img{
-            height:80px;
+            height:70px;
           }
 
           p{
             margin-left:15px;
+            font-size: 36px;
+            color: red;
+            font-family: DM Sans !important;
           }
         }
       }
@@ -67,7 +85,7 @@ page-home {
         color: black;
         font-size: 130px;
         position: absolute;
-        padding-top: 21%;
+        padding-top: 23%;
     }
 
     .local {

@@ -59,7 +59,7 @@ export class UtilityService {
           {
             text: 'Exit',
             handler: data => {
-              if (data['password'] === "1") {
+              if (data['password'] === "simpple") {
                 KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
@@ -70,10 +70,10 @@ export class UtilityService {
           {
             text: 'Logout',
             handler: data => {
-              if (data['password'] === "1") {
+              if (data['password'] === "simpple") {
                 this.storage.remove("login");   // Remove data
-                this.events.publish('logout', true);
-                KioskPlugin.exitKiosk();
+                this.events.publish('logout', true);  // Trigger event to say that user has logged out
+                // KioskPlugin.exitKiosk();
               } else {
                 alert("Wrong Password");
                 return false;
@@ -88,7 +88,7 @@ export class UtilityService {
       timeoutRef = setTimeout(() => {
         clickCount = 0;
         console.log("Timeout reached. Resetting click count.");
-      }, 2000);
+      }, 1500);
     }
   }
 

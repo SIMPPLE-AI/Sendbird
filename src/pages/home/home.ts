@@ -1,30 +1,89 @@
 import { Component, ChangeDetectorRef, ViewRef } from '@angular/core';
-import { NavController, Events } from 'ionic-angular';
+import { IonicPage, LoadingController, Events, NavController } from 'ionic-angular';
 import * as SendBirdCall from 'sendbird-calls';
 import { UtilityService } from '../../providers/utility/utility';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Storage } from '@ionic/storage';
+import { LoginPage } from '../login/login';
 
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 
-
-
 export class HomePage {
+  slideToCallProgress = 0;
   callTriggered = true;
-  progress = 0;
   callCountDownInterval:any;
   slideToCancelCallProgress = 0;
   countdown = 3;
 
-  constructor(private events:Events, public navCtrl: NavController, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
+  constructor(public navCtrl:NavController, public events:Events, public http:HttpClient, private loadingController:LoadingController, public storage:Storage, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
+    // NAVIGATE TO LOGIN PAGE IF USER HAS LOGGED OUT
+    this.events.subscribe('logout', (data) => {
+      if (data) {
+        this.navCtrl.setRoot(LoginPage);
+        console.log(this.storage.get("login"));
+      }
+    })
   }
 
-  ionViewDidLoad(){
+  async ionViewDidLoad(){
     console.log("ionViewDidLoad");
-    this.events.subscribe('CallTriggerEnabler', (data) => {
-      this.callTriggered = data;
-    })
+
+    // DISPLAY LOADER
+    let loader = this.loadingController.create({
+      content: "Loading"
+    });
+    loader.present();
+
+    await this.getMappedRobotUser();
+    loader.dismiss();
+
+  }
+
+  getMappedRobotUser(){
+    console.log("Getting mapped user");
+    let self = this;
+    return new Promise(function(resolve, reject) {
+      self.storage.get("login").then( (user_data)=> {
+        console.log("Got user data");
+        console.log(user_data);
+        if (user_data) {
+          const headers = {
+            headers: new HttpHeaders({
+              'Content-Type':  'application/json',
+              'Authorization': 'my-auth-token',
+              'Access-Control-Allow-Origin': '*'
+            })
+          };
+
+          let params = {
+              "username":user_data['Username'],
+              "password":user_data['Password']
+          };
+
+          const url = "http://192.168.86.38";
+          self.http.post(url + '/api/getMappedRobotUser',{headers: headers, params: params}).subscribe(data => {
+            if(data['success']){
+                console.log("Logged in");
+                console.log(data);
+                self.dialParams['userId'] = data['robotUserMapping']['user']['sendbird_user_account_id'];
+                resolve(true);
+            }
+            else{
+              console.log("Robot is not mapped to any user");
+              alert("Robot is not mapped to any user, unable to make calls");
+              resolve(false);
+            }
+          }, error => {
+            console.log(error);
+            resolve(false);
+          })
+        }
+      });
+    });
   }
 
   // KIOSK MODE SETTINGS
@@ -34,7 +93,7 @@ export class HomePage {
 
   // DIRECT CALL | VOICE CALL
   dialParams:SendBirdCall.DialParams = {
-    userId: 'user2',
+    userId: 'user4',
     isVideoCall: true,
     callOption: {
       audioEnabled: true,
@@ -42,89 +101,63 @@ export class HomePage {
     }
   };
 
-  // DIRECT CALL
-  /* onDirectCall(){
-    this.dialParams.isVideoCall = false;
-    this.dialParams.callOption.videoEnabled = false;
-    const call =  SendBirdCall.dial(this.dialParams, (call, error) => {
-      if (error) {
-        alert("Direct Call Failed");
-      }
-
-      // CONSOLE
-      console.log('Voice calling ' + call.callee.nickname);
-
-      // INTERFACE SETTINGS
-      document.getElementById('btnDirectCall').setAttribute('hidden','true');
-      document.getElementById('btnVideoCall').setAttribute('hidden','true');
-      document.getElementById('btnEnd').removeAttribute('hidden');
-
-      // END CALL
-      document.getElementById('btnEnd').onclick = function(){
-        call.end();
-      }
-      this.utilityService.registCallEvent(call);
-    });
-  }
-  */
-
   async onPanToCall(event: any) {
     console.log(event);
     console.log('onPanToCall');
 
     let element = document.getElementById("slideToCallActionBar");
-    let width = element.clientWidth;
+    let elementPadding = 32;
+    let width = element.clientWidth; // Width of circle element + adding of slide to call action bar
 
-    let widthToRemove = document.getElementsByClassName('slideToCallACtionBarText')[0];
-    width = width - widthToRemove.clientWidth;
+    /*
+      Calculate the effective width of #slideToCallActionBar to account for the width of the slider image, ensuring that the scroll action is considered complete when the slider image reaches the end of the scroll bar.
+      - 'elementPadding': Padding of #slideToActionBar
+      - '70': Width of the slider image
+    */
+    let widthToRemove = 70 + elementPadding;
+    width = width - widthToRemove;
 
     // Calculate the progress based on the distance and width
     let progress = event.distance / width;
 
     // If swiping towards the left, reduce the progress
     if (event.deltaX < 0) {
-      this.progress -= progress;
+      this.slideToCallProgress -= progress;
     } else {
-      this.progress = progress;
+      this.slideToCallProgress = progress;
     }
 
 
-    this.progress = Math.min(Math.max(this.progress, 0), 1);
+    this.slideToCallProgress = Math.min(Math.max(this.slideToCallProgress, 0), 1);
 
     // Check if the pan gesture has ended
     if (event.isFinal) {
-      if(this.progress == 1){
-      document.getElementById('chargingpage').setAttribute('hidden','true');
-      document.getElementById('loadcallpage').removeAttribute('hidden');
+      if(this.slideToCallProgress == 1){
+        document.getElementById('chargingpage').setAttribute('hidden','true');
+        document.getElementById('loadcallpage').removeAttribute('hidden');
 
-      // const timerElement = document.getElementById('3');
-      // timerElement.innerText = `${count}`;
-      this.callCountDownInterval = setInterval(() => {
-        this.countdown --;
-        console.log("Updating timerElement Text");
-        if (this.countdown === 0) {
-          // const timerElement = document.getElementById('3');
-          // Reset back to 3 seconds
-          // timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
-          this.countdown = 3;
+        this.callCountDownInterval = setInterval(() => {
+          this.countdown --;
+          if (this.countdown === 0) {
 
-          clearInterval(this.callCountDownInterval);
+            clearInterval(this.callCountDownInterval);
 
-          console.log("MAKING CALL");
-          // MAKE CALL
-          this.onVideoCall();
-        }
-        else{
-          // timerElement.setAttribute("src","../../assets/imgs/Count_"+ count +".png");
-          if (this.changeRef && !(this.changeRef as ViewRef).destroyed) {
-            this.changeRef.detectChanges();
+            // MAKE CALL
+            this.onVideoCall();
+
+            // Reset countdown timer to 3
+            this.countdown = 3;
           }
-        }
-      }, 1000);
+          else{
+            if (this.changeRef && !(this.changeRef as ViewRef).destroyed) {
+              this.changeRef.detectChanges();
+            }
+          }
+        }, 1000);
       }
       console.log("EVENT IS FINAL");
       // Reset progress to 0 when the pan gesture ends
-      this.progress = 0;
+      this.slideToCallProgress = 0;
     }
   }
 
@@ -133,10 +166,16 @@ export class HomePage {
     console.log('onPanToCancel');
 
     let element = document.getElementById("slideToCancelActionBar");
+    let elementPadding = 32;
     let width = element.clientWidth;
 
-    let widthToRemove = document.getElementsByClassName('slideToCancelActionBarText')[0];
-    width = width - widthToRemove.clientWidth;
+    /*
+      Calculate the effective width of #slideToCallActionBar to account for the width of the slider image, ensuring that the scroll action is considered complete when the slider image reaches the end of the scroll bar.
+      - 'elementPadding': Padding of #slideToActionBar
+      - '70': Width of the slider image
+    */
+    let widthToRemove = 70 + elementPadding;
+    width = width - widthToRemove;
 
     // Calculate the progress based on the distance and width
     let newProgress = event.distance / width;
@@ -154,18 +193,12 @@ export class HomePage {
     // Check if the pan gesture has ended
     if (event.isFinal) {
       if(this.slideToCancelCallProgress == 1){
-        console.log("Call cleared");
         clearInterval(this.callCountDownInterval);
 
         document.getElementById('chargingpage').removeAttribute('hidden');
         document.getElementById('loadcallpage').setAttribute('hidden','true');
 
-        // const timerElement = document.getElementById('3');
-        // Reset back to 3 seconds
-        // timerElement.setAttribute("src","../../assets/imgs/Count_3.png");
-
         this.countdown = 3;
-        // alert("Call cleared");
       }
       this.slideToCancelCallProgress = 0;
     }
@@ -174,75 +207,34 @@ export class HomePage {
 
   getTranslateX(): number {
     let element = document.getElementById("slideToCallActionBar");
+    let elementPadding = 32;
     let width = element.clientWidth;
 
-    let widthToRemove = document.getElementsByClassName('slideToCallACtionBarText')[0];
+    /*
+      Calculate the effective width of #slideToCallActionBar to account for the width of the slider image, ensuring that the scroll action is considered complete when the slider image reaches the end of the scroll bar.
+      - 'elementPadding': Padding of #slideToActionBar
+      - '70': Width of the slider image
+    */
+    let widthToRemove = 70 + elementPadding;
+    width = width - widthToRemove;
 
-    if(widthToRemove){
-      width = width - widthToRemove.clientWidth;
-      console.log("---slideActionBar---");
-      console.log('width = ' +width);
-      console.log('width to remove = ' +widthToRemove.clientWidth);
-    }
-    return this.progress * width;
+    return this.slideToCallProgress * width;
   }
 
   getSlideToCancelTranslateX(): number {
     let element = document.getElementById("slideToCancelActionBar");
+    let elementPadding = 32;
     let width = element.clientWidth;
 
-    let widthToRemove = document.getElementsByClassName('slideToCancelActionBarText')[0];
-
-    if(widthToRemove){
-      width = width - widthToRemove.clientWidth;
-      console.log("---slideToCancelActionBar---");
-      console.log('width = ' +width);
-      console.log('width to remove = ' +widthToRemove.clientWidth);
-    }
+    /*
+      Calculate the effective width of #slideToCallActionBar to account for the width of the slider image, ensuring that the scroll action is considered complete when the slider image reaches the end of the scroll bar.
+      - 'elementPadding': Padding of #slideToActionBar
+      - '70': Width of the slider image
+    */
+    let widthToRemove = 70 + elementPadding;
+    width = width - widthToRemove;
     return this.slideToCancelCallProgress * width;
   }
-
-  // async onSlider() {
-  //   if (this.callTriggered){
-  //     this.callTriggered = false;
-  //     // CHANGE PAGE
-  //     document.getElementById('chargingpage').setAttribute('hidden','true');
-  //     document.getElementById('loadcallpage').removeAttribute('hidden');
-
-  //     console.log('slide pls')
-  //     // SHOW COUNTDOWN
-  //     this.countdown = 3;
-  //     // CHECK IF USER CANCELLED THE CALL
-  //     this.events.subscribe('CancelCallTrigger', (data) => {
-  //       if (data) {
-  //         this.cancelCallTrigger = true;
-  //       }
-  //     });
-
-  //     while (this.countdown != 1) {
-  //       await this.delay(1000);
-  //       this.countdown--;     // decrease counter by 1
-  //       this.appRef.tick();   // refresh html page to update value
-  //     }
-
-  //     // MAKE CALL
-  //     if (!this.cancelCallTrigger){
-  //       this.onVideoCall();
-  //     }
-  //     else {
-  //       document.getElementById('loadcallpage').setAttribute('hidden','true');
-  //       document.getElementById('chargingpage').removeAttribute('hidden');
-  //     }
-  //   }
-  // }
-
-  // // CANCEL CALL INITIATE
-  // onCancel() {
-  //   if (this.callCancelled) {
-  //     this.events.publish('CancelCallTrigger', true);
-  //     this.callCancelled = false;
-  //   }
-  // }
 
   // VIDEO CALL
   onVideoCall(){
@@ -255,9 +247,5 @@ export class HomePage {
 
       this.utilityService.registCallEvent(call);
     });
-  }
-
-  delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
