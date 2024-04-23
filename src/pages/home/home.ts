@@ -60,8 +60,8 @@ export class HomePage {
           };
 
           let params = {
-              "username":user_data['Username'],
-              "password":user_data['Password']
+              "username":user_data['username'],
+              "password":user_data['password']
           };
 
           const url = "http://192.168.86.38";
