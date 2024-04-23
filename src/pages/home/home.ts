@@ -30,7 +30,7 @@ export class HomePage {
   }
 
   async ionViewDidLoad(){
-    console.log("ionViewDidLoad");
+    console.log("ionViewDidLoad - home.ts");
 
     // DISPLAY LOADER
     let loader = this.loadingController.create({
@@ -144,9 +144,6 @@ export class HomePage {
 
             // MAKE CALL
             this.onVideoCall();
-
-            // Reset countdown timer to 3
-            this.countdown = 3;
           }
           else{
             if (this.changeRef && !(this.changeRef as ViewRef).destroyed) {
@@ -238,14 +235,17 @@ export class HomePage {
 
   // VIDEO CALL
   onVideoCall(){
-    SendBirdCall.dial(this.dialParams, (call, error) => {
+    SendBirdCall.dial(this.dialParams, async (call, error) => {
       if (error) {
         alert("Video Call Failed");
       }
       // CONSOLE
       console.log('Video calling ' + call.callee.nickname);
 
-      this.utilityService.registCallEvent(call);
+      await this.utilityService.registCallEvent(call);
+
+      // Reset countdown timer to 3
+      this.countdown = 3;
     });
   }
 }

@@ -15,7 +15,7 @@ export class MyApp {
   rootPage:any = LoginPage;
 
   authOption = { userId: '', accessToken: '' };
-  
+
   constructor(screenOrientation:ScreenOrientation, navigationbar: NavigationBar, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private utilityService: UtilityService, public events:Events) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -39,7 +39,7 @@ export class MyApp {
         this.registSendBirdEventHandler();
         SendBirdCall.authenticate(this.authOption, (result, error) => {
           if (error) {
-            alert("Authentication Error. Please try again."); 
+            alert("Authentication Error. Please try again.");
           }
           else {
             console.log('AUTHENTICATION SUCCESSFUL');
@@ -50,7 +50,7 @@ export class MyApp {
         });
       }
     })
-  } 
+  }
 
   // RECEIVE A CALL
   async registSendBirdEventHandler(){
@@ -64,9 +64,9 @@ export class MyApp {
       },
       holdActiveCall: true
     };
-  
+
     SendBirdCall.addListener(uniqueid, {
-      onRinging: (call) => {
+      onRinging: async (call) => {
         if (!call.isEnded){
           call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
         }
@@ -75,7 +75,7 @@ export class MyApp {
         call.accept(acceptParams);
         document.getElementById('local_video_element_id').removeAttribute('hidden');
 
-        this.utilityService.registCallEvent(call);
+        await this.utilityService.registCallEvent(call);
       }
     });
   }
