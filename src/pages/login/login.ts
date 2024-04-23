@@ -83,10 +83,11 @@ export class LoginPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginPage');
+    console.log('ionViewDidLoad - LoginPage');
     // CHECK FOR STORED CREDENTIALS
     this.storage.get("login").then( (data)=> {
       if (data) {
+        this.log = data;
         // VERIFY USER WITH DATABASE
         this.api(data.Username,data.Password);
       }
