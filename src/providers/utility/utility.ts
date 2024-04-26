@@ -71,6 +71,7 @@ export class UtilityService {
             text: 'Logout',
             handler: data => {
               if (data['password'] === "simpple") {
+                this.storage.remove('robot');
                 this.storage.remove("login");   // Remove data
                 this.events.publish('logout', true);  // Trigger event to say that user has logged out
                 // KioskPlugin.exitKiosk();

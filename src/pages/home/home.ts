@@ -18,6 +18,8 @@ export class HomePage {
   callCountDownInterval:any;
   slideToCancelCallProgress = 0;
   countdown = 3;
+  robotStatusCountdownInterval:any;
+  url = "http://192.168.100.151";
 
   constructor(public navCtrl:NavController, public events:Events, public http:HttpClient, private loadingController:LoadingController, public storage:Storage, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
     // NAVIGATE TO LOGIN PAGE IF USER HAS LOGGED OUT
@@ -39,18 +41,61 @@ export class HomePage {
     loader.present();
 
     await this.getMappedRobotUser();
-    loader.dismiss();
 
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+
+    await this.getRobotStatusAPI();
+
+    // Create timer interval
+    this.robotStatusCountdownInterval = setInterval(async () => {
+      console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+      await this.getRobotStatusAPI();
+    }, 10000); // 10000 milliseconds = 00 seconds
+
+    loader.dismiss();
+  }
+
+  ionViewDidLeave(){
+    console.log("ionViewDidLeave");
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+
+    if(this.robotStatusCountdownInterval){
+      clearInterval(this.robotStatusCountdownInterval);
+      this.robotStatusCountdownInterval = null;
+    }
+    if(this.callCountDownInterval){
+      clearInterval(this.callCountDownInterval);
+      this.callCountDownInterval = null;
+    }
+  }
+
+  /*
+  Clear robotStatusCountdownInterval if app is minimized
+  Dont clear callCountDownInterval since it is assumed that user won't end minimize app while calling another user so as to avoid initializing the callDownInterval again
+  */
+  handleVisibilityChange = async () => {
+    console.log("handleVisibilityChangeCalled");
+    if (document.visibilityState === 'hidden') {
+      if (this.robotStatusCountdownInterval) {
+        clearInterval(this.robotStatusCountdownInterval);
+        this.robotStatusCountdownInterval = null;
+      }
+    } else {
+      await this.getRobotStatusAPI();
+      // You can optionally restart the intervals here if needed
+      this.robotStatusCountdownInterval = setInterval(async () => {
+        console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+        await this.getRobotStatusAPI();
+      }, 10000); // 10000 milliseconds = 00 seconds
+    }
   }
 
   getMappedRobotUser(){
     console.log("Getting mapped user");
     let self = this;
     return new Promise(function(resolve, reject) {
-      self.storage.get("login").then( (user_data)=> {
-        console.log("Got user data");
-        console.log(user_data);
-        if (user_data) {
+      self.storage.get("robot").then( (robot_data)=> {
+        if (robot_data) {
           const headers = {
             headers: new HttpHeaders({
               'Content-Type':  'application/json',
@@ -60,12 +105,10 @@ export class HomePage {
           };
 
           let params = {
-              "username":user_data['username'],
-              "password":user_data['password']
+              "robot_id":robot_data['id']
           };
 
-          const url = "http://192.168.86.38";
-          self.http.post(url + '/api/getMappedRobotUser',{headers: headers, params: params}).subscribe(data => {
+          self.http.post(self.url + '/api/getMappedRobotUser',{headers: headers, params: params}).subscribe(data => {
             if(data['success']){
                 console.log("Logged in");
                 console.log(data);
@@ -141,6 +184,7 @@ export class HomePage {
           if (this.countdown === 0) {
 
             clearInterval(this.callCountDownInterval);
+            this.callCountDownInterval = null;
 
             // MAKE CALL
             this.onVideoCall();
@@ -246,6 +290,39 @@ export class HomePage {
 
       // Reset countdown timer to 3
       this.countdown = 3;
+    });
+  }
+
+  async getRobotStatusAPI(){
+    console.log('getRobotStatusAPI')
+    let self = this;
+    return new Promise(function(resolve, reject) {
+      const headers = {
+        headers: new HttpHeaders({
+          'Content-Type':  'application/json',
+          'Authorization': 'my-auth-token',
+          'Access-Control-Allow-Origin': '*'
+        })
+      };
+      self.storage.get("robot").then( (robot_data)=> {
+        let params = {
+            "robot_id":robot_data['serial_number']
+        };
+
+        self.http.post(self.url + '/api/getGSRobotStatus',{headers: headers, params: params}).subscribe(data => {
+        if(data['success']){
+          console.log(`Successfully retrieved robot status at ${new Date().toLocaleString()}`);
+          resolve(true);
+        }
+        else{
+          console.log("Unable to get robot status")
+          resolve(false);
+        }
+      }, error => {
+        console.log(error);
+        resolve(false);
+        })
+      });
     });
   }
 }

@@ -19,7 +19,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-
+  url = "http://192.168.100.151";
   log = {username: '', password: ''};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
@@ -62,12 +62,12 @@ export class LoginPage {
         "password":password  // 'simpple123'
     };
     console.log(params);
-    const url = "http://192.168.86.38";
-    this.http.post(url + '/api/robotLogin',{headers: headers, params: params}).subscribe(data => {
+    this.http.post(this.url + '/api/robotLogin',{headers: headers, params: params}).subscribe(data => {
       if(data['success']){
         console.log("Logged in");
         // SAVE CREDENTIALS
         this.storage.set("login", this.log);
+        this.storage.set("robot", data['robot']);
         this.navCtrl.setRoot(HomePage);
         // TRIGGER EVENT HANDLER INIT AND AUTHENTICATE SENDBIRD
         this.events.publish('init', username);
@@ -84,6 +84,7 @@ export class LoginPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad - LoginPage');
+
     // CHECK FOR STORED CREDENTIALS
     this.storage.get("login").then( (data)=> {
       if (data) {
