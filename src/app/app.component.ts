@@ -33,9 +33,11 @@ export class MyApp {
     // SENDBIRD INIT & AUTHENTICATE
     this.events.subscribe('init', (data) => {
       if (data != null){
+        console.log('--initEventHandler---')
         console.log(data);
-        this.authOption.userId = data;
-        SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
+        this.authOption.userId = data['sendbird_user_account_id'];
+        SendBirdCall.init(data['clients']['sendbird_application_id']);
+        // SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
         this.registSendBirdEventHandler();
         SendBirdCall.authenticate(this.authOption, (result, error) => {
           if (error) {

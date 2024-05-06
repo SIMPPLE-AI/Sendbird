@@ -70,7 +70,7 @@ export class LoginPage {
         this.storage.set("robot", data['robot']);
         this.navCtrl.setRoot(HomePage);
         // TRIGGER EVENT HANDLER INIT AND AUTHENTICATE SENDBIRD
-        this.events.publish('init', username);
+        this.events.publish('init', data['robot']);
       }
       else{
         console.log("Invalid credentials");
