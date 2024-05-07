@@ -29,6 +29,12 @@ export class HomePage {
         console.log(this.storage.get("login"));
       }
     })
+
+    this.events.subscribe('CallEndedEvent', () => {
+      console.log("Call ended event");
+      this.resetCountdown();
+    });
+
   }
 
   async ionViewDidLoad(){
@@ -277,6 +283,10 @@ export class HomePage {
     return this.slideToCancelCallProgress * width;
   }
 
+  resetCountdown(){
+    this.countdown = 3;
+  }
+
   // VIDEO CALL
   onVideoCall(){
     SendBirdCall.dial(this.dialParams, async (call, error) => {
@@ -286,10 +296,10 @@ export class HomePage {
       // CONSOLE
       console.log('Video calling ' + call.callee.nickname);
 
-      await this.utilityService.registCallEvent(call);
+      this.utilityService.registCallEvent(call);
 
       // Reset countdown timer to 3
-      this.countdown = 3;
+      // this.countdown = 3;
     });
   }
 

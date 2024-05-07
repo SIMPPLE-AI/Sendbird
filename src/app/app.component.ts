@@ -15,6 +15,12 @@ export class MyApp {
   rootPage:any = LoginPage;
 
   authOption = { userId: '', accessToken: '' };
+  acceptParams = {
+    callOption: {
+      audioEnabled: true,
+      videoEnabled: true
+    }
+  };
 
   constructor(screenOrientation:ScreenOrientation, navigationbar: NavigationBar, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private utilityService: UtilityService, public events:Events) {
     platform.ready().then(() => {
@@ -55,29 +61,39 @@ export class MyApp {
   }
 
   // RECEIVE A CALL
-  async registSendBirdEventHandler(){
+  registSendBirdEventHandler(){
     let uniqueid = "unique-id";
-    let acceptParams = {
-      callOption: {
-        remoteMediaView: <HTMLMediaElement>document.getElementById('remote_video_element_id'),
-        localMediaView:  <HTMLMediaElement>document.getElementById('local_video_element_id'),
-        audioEnabled: true,
-        videoEnabled: true
-      },
-      holdActiveCall: true
-    };
 
     SendBirdCall.addListener(uniqueid, {
-      onRinging: async (call) => {
-        if (!call.isEnded){
-          call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
+      onRinging: (call) => {
+
+        let onGoingCallCount = SendBirdCall.getOngoingCallCount();
+        console.log("---Get ongoing call count---");
+        console.log(SendBirdCall.getOngoingCallCount());
+
+        /*
+        If there is currently no ongoing calls, then handle the call accordingly
+        Else if there is an ongoing call, block out all other calls
+
+        callCount refers to number of incoming calls, don't have to be answered calls
+        callCount == 0 means call was ended
+        callCount == 1 means 1 incoming call
+        callCount >= 1 means X number of incoming calls
+        */
+        if(onGoingCallCount < 2){
+          if (!call.isEnded){
+            call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
+            // AUTO ACCEPT A CALL
+            call.accept(this.acceptParams);
+            document.getElementById('local_video_element_id').removeAttribute('hidden');
+
+            this.utilityService.registCallEvent(call);
+          }
         }
-
-        // AUTO ACCEPT A CALL
-        call.accept(acceptParams);
-        document.getElementById('local_video_element_id').removeAttribute('hidden');
-
-        await this.utilityService.registCallEvent(call);
+        else{
+          console.log("***ALREADY HAVE ACTIVE CALL****");
+          call.end();
+        }
       }
     });
   }
