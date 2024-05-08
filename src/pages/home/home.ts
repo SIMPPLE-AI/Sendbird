@@ -19,7 +19,7 @@ export class HomePage {
   slideToCancelCallProgress = 0;
   countdown = 3;
   robotStatusCountdownInterval:any;
-  url = "http://192.168.100.151";
+  url = "https://demo.simpple.app";
 
   constructor(public navCtrl:NavController, public events:Events, public http:HttpClient, private loadingController:LoadingController, public storage:Storage, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
     // NAVIGATE TO LOGIN PAGE IF USER HAS LOGGED OUT

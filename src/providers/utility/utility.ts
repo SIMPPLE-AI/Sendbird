@@ -17,7 +17,7 @@ let timeoutRef = null;
 */
 @Injectable()
 export class UtilityService {
-  url = "http://192.168.100.151";
+  url = "https://demo.simpple.app";
 
   constructor(private storage:Storage, private alertController:AlertController, public http: HttpClient, public events: Events) {
     console.log('Hello UtilityProvider Provider');

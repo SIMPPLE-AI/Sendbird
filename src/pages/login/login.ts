@@ -19,7 +19,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  url = "http://192.168.100.151";
+  url = "https://demo.simpple.app";
   log = {username: '', password: ''};
 
   constructor(public http:HttpClient, public utilityService:UtilityService, public navCtrl: NavController, public navParams: NavParams, public loadingController:LoadingController, public storage:Storage, public events:Events) {
