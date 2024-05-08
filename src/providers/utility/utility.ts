@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as SendBirdCall from 'sendbird-calls';
 import { Events, AlertController } from 'ionic-angular';
@@ -17,6 +17,7 @@ let timeoutRef = null;
 */
 @Injectable()
 export class UtilityService {
+  url = "http://192.168.100.151";
 
   constructor(private storage:Storage, private alertController:AlertController, public http: HttpClient, public events: Events) {
     console.log('Hello UtilityProvider Provider');
@@ -114,6 +115,31 @@ export class UtilityService {
       call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
       call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
       remote_video.muted = false;
+
+      this.storage.get("robot").then( (robot_data)=> {
+        const headers = {
+          headers: new HttpHeaders({
+            'Content-Type':  'application/json',
+            'Authorization': 'my-auth-token',
+            'Access-Control-Allow-Origin': '*'
+          })
+        };
+        let params = {
+            "robot_id":robot_data['id'],
+            "robot_call_status":1
+        };
+
+        this.http.post(this.url + '/api/updateRobotCallStatus',{headers: headers, params: params}).subscribe(data => {
+        if(data['success']){
+          console.log(`Successfully update robot call status at ${new Date().toLocaleString()}`);
+        }
+        else{
+          console.log("Failed to update robot call status")
+        }
+      }, error => {
+        console.log(error);
+        })
+      });
     }
 
     call.onEnded = (call) => {
@@ -123,6 +149,31 @@ export class UtilityService {
       document.getElementById('overallpage').removeAttribute('hidden');
       document.getElementById('videocall').setAttribute('hidden','true');
       this.events.publish('CallEndedEvent');
+
+      this.storage.get("robot").then( (robot_data)=> {
+        const headers = {
+          headers: new HttpHeaders({
+            'Content-Type':  'application/json',
+            'Authorization': 'my-auth-token',
+            'Access-Control-Allow-Origin': '*'
+          })
+        };
+        let params = {
+            "robot_id":robot_data['id'],
+            "robot_call_status":0
+        };
+
+        this.http.post(this.url + '/api/updateRobotCallStatus',{headers: headers, params: params}).subscribe(data => {
+        if(data['success']){
+          console.log(`Successfully update robot call status at ${new Date().toLocaleString()}`);
+        }
+        else{
+          console.log("Failed to update robot call status")
+        }
+      }, error => {
+        console.log(error);
+        })
+      });
     };
 
     call.onRemoteAudioSettingsChanged = (call) => {
