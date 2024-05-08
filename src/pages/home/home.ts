@@ -56,7 +56,7 @@ export class HomePage {
     this.robotStatusCountdownInterval = setInterval(async () => {
       console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
       await this.getRobotStatusAPI();
-    }, 10000); // 10000 milliseconds = 00 seconds
+    }, 60000); // 60000 milliseconds = 60 seconds
 
     loader.dismiss();
   }
@@ -66,6 +66,7 @@ export class HomePage {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
 
     if(this.robotStatusCountdownInterval){
+      console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
       clearInterval(this.robotStatusCountdownInterval);
       this.robotStatusCountdownInterval = null;
     }
@@ -83,16 +84,18 @@ export class HomePage {
     console.log("handleVisibilityChangeCalled");
     if (document.visibilityState === 'hidden') {
       if (this.robotStatusCountdownInterval) {
+        console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
         clearInterval(this.robotStatusCountdownInterval);
         this.robotStatusCountdownInterval = null;
       }
     } else {
       await this.getRobotStatusAPI();
+      console.log("RESTARTING ROBOT STATUS INTERVAL");
       // You can optionally restart the intervals here if needed
       this.robotStatusCountdownInterval = setInterval(async () => {
         console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
         await this.getRobotStatusAPI();
-      }, 10000); // 10000 milliseconds = 00 seconds
+      }, 60000); // 60000 milliseconds = 10 seconds
     }
   }
 
@@ -142,7 +145,7 @@ export class HomePage {
 
   // DIRECT CALL | VOICE CALL
   dialParams:SendBirdCall.DialParams = {
-    userId: 'user4',
+    userId: '',
     isVideoCall: true,
     callOption: {
       audioEnabled: true,
