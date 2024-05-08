@@ -48,56 +48,56 @@ export class HomePage {
 
     await this.getMappedRobotUser();
 
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    // document.addEventListener('visibilitychange', this.handleVisibilityChange);
 
-    await this.getRobotStatusAPI();
+    // await this.getRobotStatusAPI();
 
-    // Create timer interval
-    this.robotStatusCountdownInterval = setInterval(async () => {
-      console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
-      await this.getRobotStatusAPI();
-    }, 60000); // 60000 milliseconds = 60 seconds
+    // // Create timer interval
+    // this.robotStatusCountdownInterval = setInterval(async () => {
+    //   console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+    //   await this.getRobotStatusAPI();
+    // }, 60000); // 60000 milliseconds = 60 seconds
 
     loader.dismiss();
   }
 
   ionViewDidLeave(){
     console.log("ionViewDidLeave");
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    // document.removeEventListener('visibilitychange', this.handleVisibilityChange);
 
-    if(this.robotStatusCountdownInterval){
-      console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
-      clearInterval(this.robotStatusCountdownInterval);
-      this.robotStatusCountdownInterval = null;
-    }
-    if(this.callCountDownInterval){
-      clearInterval(this.callCountDownInterval);
-      this.callCountDownInterval = null;
-    }
+    // if(this.robotStatusCountdownInterval){
+    //   console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
+    //   clearInterval(this.robotStatusCountdownInterval);
+    //   this.robotStatusCountdownInterval = null;
+    // }
+    // if(this.callCountDownInterval){
+    //   clearInterval(this.callCountDownInterval);
+    //   this.callCountDownInterval = null;
+    // }
   }
 
   /*
   Clear robotStatusCountdownInterval if app is minimized
   Dont clear callCountDownInterval since it is assumed that user won't end minimize app while calling another user so as to avoid initializing the callDownInterval again
   */
-  handleVisibilityChange = async () => {
-    console.log("handleVisibilityChangeCalled");
-    if (document.visibilityState === 'hidden') {
-      if (this.robotStatusCountdownInterval) {
-        console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
-        clearInterval(this.robotStatusCountdownInterval);
-        this.robotStatusCountdownInterval = null;
-      }
-    } else {
-      await this.getRobotStatusAPI();
-      console.log("RESTARTING ROBOT STATUS INTERVAL");
-      // You can optionally restart the intervals here if needed
-      this.robotStatusCountdownInterval = setInterval(async () => {
-        console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
-        await this.getRobotStatusAPI();
-      }, 60000); // 60000 milliseconds = 10 seconds
-    }
-  }
+  // handleVisibilityChange = async () => {
+  //   console.log("handleVisibilityChangeCalled");
+  //   if (document.visibilityState === 'hidden') {
+  //     if (this.robotStatusCountdownInterval) {
+  //       console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
+  //       clearInterval(this.robotStatusCountdownInterval);
+  //       this.robotStatusCountdownInterval = null;
+  //     }
+  //   } else {
+  //     await this.getRobotStatusAPI();
+  //     console.log("RESTARTING ROBOT STATUS INTERVAL");
+  //     // You can optionally restart the intervals here if needed
+  //     this.robotStatusCountdownInterval = setInterval(async () => {
+  //       console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+  //       await this.getRobotStatusAPI();
+  //     }, 60000); // 60000 milliseconds = 10 seconds
+  //   }
+  // }
 
   getMappedRobotUser(){
     console.log("Getting mapped user");
