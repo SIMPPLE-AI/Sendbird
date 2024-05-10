@@ -116,6 +116,27 @@ export class UtilityService {
       call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
       remote_video.muted = false;
 
+      console.log('----TEST----');
+      setTimeout(() => {
+        console.log("1.5seconds delay");
+        // Retrieve and display available audio input devices
+        const audioInputDevices = SendBirdCall.getAvailableAudioInputDevices();
+        console.log("Available audio input devices:", audioInputDevices);
+        console.log("Number of available audio input devices:", audioInputDevices.length);
+        if(audioInputDevices.length){
+          SendBirdCall.selectAudioInputDevice(audioInputDevices[0]);
+        }
+
+
+        // Retrieve and display available audio output devices
+        const audioOutputDevices = SendBirdCall.getAvailableAudioOutputDevices();
+        console.log("Available audio output devices:", audioOutputDevices);
+        console.log("Number of available audio output devices:", audioOutputDevices.length);
+        if(audioOutputDevices.length){
+          SendBirdCall.selectAudioOutputDevice(audioOutputDevices[0]);
+        }
+      },1500);
+
       this.storage.get("robot").then( (robot_data)=> {
         const headers = {
           headers: new HttpHeaders({

@@ -22,7 +22,7 @@
     "@ionic-native/core": "^4.20.0",
     "@ionic-native/navigation-bar": "^4.20.0",
     "@ionic-native/screen-orientation": "^4.20.0",
-    "@ionic-native/splash-screen": "4.20.0",
+    "@ionic-native/splash-screen": "^4.20.0",
     "@ionic-native/status-bar": "4.20.0",
     "@ionic/storage": "2.2.0",
     "backend": "0.0.0",
