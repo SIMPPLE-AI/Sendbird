@@ -8,23 +8,25 @@
 <ion-content class="ion-content">
   <div id="overallpage" style="padding-top: 5%;">
     <!-- CLIENT LOGO -->
-    <div style="display: flex; justify-content: center; padding-top: 5%;">
-      <ion-row>
-        <img style="display:flex; justify-content: center; padding-top: 5%; width: 90.5px; height: 92.5px;" src="../../assets/imgs/client_name.png"/>
-      </ion-row>
-      <h1 style="display:flex; justify-content: center; padding-left: 8px; font-size: 40px;">Simpple</h1>
+    <div style="display: flex; justify-content: center; padding-top: 5%">
+      <img style="display:flex; justify-content: center; width: 50%; height: 50%px;" src="../../assets/imgs/Simpple Logo White Horizontal-09 3.png"/>
     </div>
 
-    <!-- CHARGING PAGE -->
-    <div id="chargingpage">
-      <!-- CHARGING TEXT -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img style="width: 70%; height: 7%;" src="../../assets/imgs/charging_text.png"/>
+    <div id="idlepage">
+      <!-- ROBOT STATUS TEXT -->
+      <div style="display: flex; justify-content: center;">
+        <p id="robotStatusText" style="color:#FF8F3A; font-size: 45px; text-align: center; width: 80%; font-weight: bold;">Recharging my circuits one electron at a time...</p>
       </div>
 
-      <!-- CHARGING ROBOT IMAGE -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
+      <!-- CHARGING | IDLE ROBOT IMAGE -->
+      <div id="chargingpage" style="display: flex; justify-content: center;">
         <img style="width: 80%; height: 8%;" src="../../assets/imgs/charging_robot.png"/>
+      </div>
+
+
+      <!-- PATROLLING ROBOT IMAGE -->
+      <div id="patrolpage" hidden="true" style="display: flex; justify-content: center;">
+        <img style="width: 52%; height: 1%;" src="../../assets/imgs/patrol_robot.png"/>
       </div>
 
       <!-- SLIDE TO CALL -->
@@ -38,31 +40,19 @@
           </div>
         </ion-item>
       </div>
-    </div>
 
-    <!-- PATROLLING PAGE -->
-    <div id="patrolpage" hidden="true">
-      <!-- PATROLLING TEXT -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Patrolling in Progress.png"/>
-      </div>
-
-      <!-- PATROLLING ROBOT IMAGE -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img style="width: 40%; height: 4%;" src="../../assets/imgs/patrolling_robot.png"/>
-      </div>
     </div>
 
     <!-- LOAD CALL PAGE -->
     <div id="loadcallpage" hidden="true">
       <!-- LOAD CALL TEXT -->
-      <div style="display: flex; justify-content: center; padding-top: 5%;">
-        <img style="width: 70%; height: 7%;" src="../../assets/imgs/Getting Assistance in...png"/>
+      <div style="display: flex; justify-content: center;">
+        <p style="color:#FF8F3A; font-size: 45px; text-align: center; width: 70%; font-weight: bold;">Getting Assistance In...</p>
       </div>
 
       <!-- LOAD CALL COUNT -->
       <div style="display: flex; justify-content: center; padding-top: 5%; ">
-        <img style="width: 75%; height: 7.5%;" src="../../assets/imgs/Count.png"/>
+        <img style="width: 72%; height: 7.2%;" src="../../assets/imgs/Count.png"/>
         <h2 class="countdown">{{countdown}}</h2>
       </div>
 
@@ -77,12 +67,11 @@
           </div>
         </ion-item>
       </div>
-
     </div>
 
     <!-- WARNING TEXT -->
     <div style="display: flex; justify-content: center; padding-top: 3%;">
-      <img style="width: 85%; height: 8.5%;" src="../../assets/imgs/warning_text.png"/>
+      <img style="width: 85%; height: 10%;" src="../../assets/imgs/warning_text.png"/>
     </div>
 
     <!-- HIDDEN EXIT BUTTON -->

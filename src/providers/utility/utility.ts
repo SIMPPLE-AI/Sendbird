@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as SendBirdCall from 'sendbird-calls';
 import { Events, AlertController } from 'ionic-angular';
@@ -18,9 +18,48 @@ let timeoutRef = null;
 @Injectable()
 export class UtilityService {
   url = "https://demo.simpple.app";
+  robotUrl = "http://black-ugly:55555";
+  // robotUrl = "http://10.7.5.88:8080"   // FOR TESTING
 
   constructor(private storage:Storage, private alertController:AlertController, public http: HttpClient, public events: Events) {
     console.log('Hello UtilityProvider Provider');
+  }
+
+  /* GET ROBOT STATUS */
+  async getRobotStatusAPI(){
+    console.log('getRobotStatusAPI')
+    let self = this;
+    return new Promise(function(resolve, reject) {
+      self.http.get(self.robotUrl + '/gs-robot/data/device_status').subscribe(data => {
+        if(data){
+          console.log(`Successfully retrieved robot status at ${new Date().toLocaleString()}`);
+          console.log(data['data']['charge']);
+          if (data['data']['charge'] == false && (data['data']['manualCharging'] == false)){
+            document.getElementById('patrolpage').removeAttribute('hidden');
+            document.getElementById('chargingpage').setAttribute('hidden','true');
+            // Check if robot is executing a task or in idle mode
+            self.http.get(self.robotUrl + '/gs-robot/real_time_data/robot_status').subscribe(data => {
+              if (data['data']['robotStatus']['workType'] == 'IDLE') {
+                document.getElementById('robotStatusText').innerHTML = "Just Hanging Out In Chill Mode...";
+              }
+              else {
+                document.getElementById('robotStatusText').innerHTML = "Vigilance Operations Are Currently Underway...";
+              }
+            })
+          }
+          else if (data['data']['charge'] == true || (data['data']['manualCharging'] == true)){
+            document.getElementById('chargingpage').removeAttribute('hidden');
+            document.getElementById('patrolpage').setAttribute('hidden','true');
+            document.getElementById('robotStatusText').innerHTML = "Recharging my circuits, one electron at a time...";
+          }
+          resolve(true);
+        }
+        else{
+          console.log("Unable to get robot status")
+          resolve(false);
+        }
+      });
+    });
   }
 
   /* EXIT EVENT HANDLER */
@@ -110,11 +149,15 @@ export class UtilityService {
 
 
     call.onEstablished = (call) => {
-      console.log("Call is Established");
+      console.log("Call is Established"); 
+
+      // Change User Interface 
       document.getElementById('local_video_element_id').removeAttribute('hidden');
       call.setRemoteMediaView(<HTMLVideoElement>document.getElementById('remote_video_element_id'));
       call.setLocalMediaView(<HTMLVideoElement>document.getElementById('local_video_element_id'));
       remote_video.muted = false;
+
+
 
       console.log('----TEST----');
       setTimeout(() => {
@@ -127,7 +170,6 @@ export class UtilityService {
           SendBirdCall.selectAudioInputDevice(audioInputDevices[0]);
         }
 
-
         // Retrieve and display available audio output devices
         const audioOutputDevices = SendBirdCall.getAvailableAudioOutputDevices();
         console.log("Available audio output devices:", audioOutputDevices);
@@ -136,67 +178,36 @@ export class UtilityService {
           SendBirdCall.selectAudioOutputDevice(audioOutputDevices[0]);
         }
       },1500);
-
-      this.storage.get("robot").then( (robot_data)=> {
-        const headers = {
-          headers: new HttpHeaders({
-            'Content-Type':  'application/json',
-            'Authorization': 'my-auth-token',
-            'Access-Control-Allow-Origin': '*'
-          })
-        };
-        let params = {
-            "robot_id":robot_data['id'],
-            "robot_call_status":1
-        };
-
-        this.http.post(this.url + '/api/updateRobotCallStatus',{headers: headers, params: params}).subscribe(data => {
-        if(data['success']){
-          console.log(`Successfully update robot call status at ${new Date().toLocaleString()}`);
-        }
-        else{
-          console.log("Failed to update robot call status")
-        }
-      }, error => {
-        console.log(error);
-        })
-      });
     }
 
     call.onEnded = (call) => {
       console.log("Call Ended");
       document.getElementById('loadcallpage').setAttribute('hidden','true');
-      document.getElementById('chargingpage').removeAttribute('hidden');
+      document.getElementById('idlepage').removeAttribute('hidden');
       document.getElementById('overallpage').removeAttribute('hidden');
       document.getElementById('videocall').setAttribute('hidden','true');
       this.events.publish('CallEndedEvent');
 
-      this.storage.get("robot").then( (robot_data)=> {
-        const headers = {
-          headers: new HttpHeaders({
-            'Content-Type':  'application/json',
-            'Authorization': 'my-auth-token',
-            'Access-Control-Allow-Origin': '*'
-          })
-        };
-        let params = {
-            "robot_id":robot_data['id'],
-            "robot_call_status":0
-        };
+       // Resume Robot Task Queue
+       console.log('resumeTaskQueueAPI')
+       let self = this;
+       new Promise(function(resolve, reject) {
+         self.http.get(self.robotUrl + '/gs-robot/cmd/resume_task_queue').subscribe(data => {
+           if(data){
+             console.log(`Successfully resumed robot's task at ${new Date().toLocaleString()}`);
+             resolve(true);
+           }
+           else{
+             console.log("Unable to resume task");
+             resolve(false);
+           }
+         });
+       });
 
-        this.http.post(this.url + '/api/updateRobotCallStatus',{headers: headers, params: params}).subscribe(data => {
-        if(data['success']){
-          console.log(`Successfully update robot call status at ${new Date().toLocaleString()}`);
-        }
-        else{
-          console.log("Failed to update robot call status")
-        }
-      }, error => {
-        console.log(error);
-        })
-      });
-    };
-
+      // Retrieve Robot Status
+      this.getRobotStatusAPI();
+    }
+    
     call.onRemoteAudioSettingsChanged = (call) => {
       if(call.isRemoteAudioEnabled){
         console.log(`Remote Audio unmuted`);

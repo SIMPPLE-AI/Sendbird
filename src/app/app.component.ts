@@ -4,6 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { NavigationBar } from '@ionic-native/navigation-bar';
 import { ScreenOrientation } from '@ionic-native/screen-orientation';
+import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../providers/utility/utility';
 import * as SendBirdCall from 'sendbird-calls';
 import { LoginPage } from '../pages/login/login';
@@ -14,6 +15,9 @@ import { LoginPage } from '../pages/login/login';
 export class MyApp {
   rootPage:any = LoginPage;
 
+  robotUrl = "http://black-ugly:55555";
+  // robotUrl = "http://10.7.5.88:8080"   // FOR TESTING
+
   authOption = { userId: '', accessToken: '' };
   acceptParams = {
     callOption: {
@@ -22,7 +26,7 @@ export class MyApp {
     }
   };
 
-  constructor(screenOrientation:ScreenOrientation, navigationbar: NavigationBar, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private utilityService: UtilityService, public events:Events) {
+  constructor(public http:HttpClient, screenOrientation:ScreenOrientation, navigationbar: NavigationBar, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private utilityService: UtilityService, public events:Events) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -43,7 +47,6 @@ export class MyApp {
         console.log(data);
         this.authOption.userId = data['sendbird_user_account_id'];
         SendBirdCall.init(data['clients']['sendbird_application_id']);
-        // SendBirdCall.init('15A8BF54-BF4F-44D6-8636-786F169BB2D4');
         this.registSendBirdEventHandler();
         SendBirdCall.authenticate(this.authOption, (result, error) => {
           if (error) {
@@ -85,8 +88,23 @@ export class MyApp {
             call.isVideoCall? console.log(call.caller.nickname + " is video calling") : console.log(call.caller.nickname + " is voice calling");
             // AUTO ACCEPT A CALL
             call.accept(this.acceptParams);
-            document.getElementById('local_video_element_id').removeAttribute('hidden');
 
+            // Pause Robot Task Queue
+            console.log('pauseTaskQueueAPI')
+            let self = this;
+            new Promise(function(resolve, reject) {
+              self.http.get(self.robotUrl + '/gs-robot/cmd/pause_task_queue').subscribe(data => {
+                if(data){
+                  console.log(`Successfully paused robot's task at ${new Date().toLocaleString()}`);
+                  resolve(true);
+                }
+                else{
+                  console.log("Unable to pause task");
+                  resolve(false);
+                }
+              });
+            });
+            
             this.utilityService.registCallEvent(call);
           }
         }

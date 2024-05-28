@@ -20,6 +20,8 @@ export class HomePage {
   countdown = 3;
   robotStatusCountdownInterval:any;
   url = "https://demo.simpple.app";
+  robotUrl = "http://black-ugly:55555";
+  // robotUrl = "http://10.7.5.88:8080"   // FOR TESTING
 
   constructor(public navCtrl:NavController, public events:Events, public http:HttpClient, private loadingController:LoadingController, public storage:Storage, private utilityService:UtilityService,private changeRef: ChangeDetectorRef) {
     // NAVIGATE TO LOGIN PAGE IF USER HAS LOGGED OUT
@@ -48,57 +50,60 @@ export class HomePage {
 
     await this.getMappedRobotUser();
 
-    // document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
 
-    // await this.getRobotStatusAPI();
+    await this.utilityService.getRobotStatusAPI();
 
-    // // Create timer interval
-    // this.robotStatusCountdownInterval = setInterval(async () => {
-    //   console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
-    //   await this.getRobotStatusAPI();
-    // }, 60000); // 60000 milliseconds = 60 seconds
+    // Create timer interval
+    this.robotStatusCountdownInterval = setInterval(async () => {
+      console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+      await this.utilityService.getRobotStatusAPI();
+    }, 10000); // 10000 milliseconds = 10 seconds
 
     loader.dismiss();
   }
 
   ionViewDidLeave(){
     console.log("ionViewDidLeave");
-    // document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
 
-    // if(this.robotStatusCountdownInterval){
-    //   console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
-    //   clearInterval(this.robotStatusCountdownInterval);
-    //   this.robotStatusCountdownInterval = null;
-    // }
-    // if(this.callCountDownInterval){
-    //   clearInterval(this.callCountDownInterval);
-    //   this.callCountDownInterval = null;
-    // }
+    if(this.robotStatusCountdownInterval){
+      console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
+      clearInterval(this.robotStatusCountdownInterval);
+      this.robotStatusCountdownInterval = null;
+    }
+    if(this.callCountDownInterval){
+      clearInterval(this.callCountDownInterval);
+      this.callCountDownInterval = null;
+    }
   }
 
   /*
-  Clear robotStatusCountdownInterval if app is minimized
+  @brief: This function clears robotStatusCountdownInterval if app is minimized
   Dont clear callCountDownInterval since it is assumed that user won't end minimize app while calling another user so as to avoid initializing the callDownInterval again
   */
-  // handleVisibilityChange = async () => {
-  //   console.log("handleVisibilityChangeCalled");
-  //   if (document.visibilityState === 'hidden') {
-  //     if (this.robotStatusCountdownInterval) {
-  //       console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
-  //       clearInterval(this.robotStatusCountdownInterval);
-  //       this.robotStatusCountdownInterval = null;
-  //     }
-  //   } else {
-  //     await this.getRobotStatusAPI();
-  //     console.log("RESTARTING ROBOT STATUS INTERVAL");
-  //     // You can optionally restart the intervals here if needed
-  //     this.robotStatusCountdownInterval = setInterval(async () => {
-  //       console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
-  //       await this.getRobotStatusAPI();
-  //     }, 60000); // 60000 milliseconds = 10 seconds
-  //   }
-  // }
+  handleVisibilityChange = async () => {
+    console.log("handleVisibilityChangeCalled");
+    if (document.visibilityState === 'hidden') {
+      if (this.robotStatusCountdownInterval) {
+        console.log("CLEARING ROBOT STATUS COUNTDOWN INTERVAL");
+        clearInterval(this.robotStatusCountdownInterval);
+        this.robotStatusCountdownInterval = null;
+      }
+    } else {
+      this.utilityService.getRobotStatusAPI();
+      console.log("RESTARTING ROBOT STATUS INTERVAL");
+      // You can optionally restart the intervals here if needed
+      this.robotStatusCountdownInterval = setInterval(async () => {
+        console.log(`Calling getRobotStatusAPI @  ${new Date().toLocaleString()}`);
+        this.utilityService.getRobotStatusAPI();
+      }, 10000); // 10000 milliseconds = 10 seconds
+    }
+  }
 
+  /*
+    @brief: This function retreives the user that is paired with the logged in robot from the Simpple Server.
+  */
   getMappedRobotUser(){
     console.log("Getting mapped user");
     let self = this;
@@ -154,8 +159,8 @@ export class HomePage {
   };
 
   async onPanToCall(event: any) {
-    console.log(event);
-    console.log('onPanToCall');
+    // console.log(event);
+    // console.log('onPanToCall');
 
     let element = document.getElementById("slideToCallActionBar");
     let elementPadding = 32;
@@ -185,9 +190,28 @@ export class HomePage {
     // Check if the pan gesture has ended
     if (event.isFinal) {
       if(this.slideToCallProgress == 1){
-        document.getElementById('chargingpage').setAttribute('hidden','true');
+
+        // Convert user interface to countdown page
+        document.getElementById('idlepage').setAttribute('hidden','true');
         document.getElementById('loadcallpage').removeAttribute('hidden');
 
+        // Pause Robot Task Queue
+        console.log('pauseTaskQueueAPI')
+        let self = this;
+        new Promise(function(resolve, reject) {
+          self.http.get(self.robotUrl + '/gs-robot/cmd/pause_task_queue').subscribe(data => {
+            if(data){
+              console.log(`Successfully paused robot's task at ${new Date().toLocaleString()}`);
+              resolve(true);
+            }
+            else{
+              console.log("Unable to pause task");
+              resolve(false);
+            }
+          });
+        });
+
+        // Countdown function
         this.callCountDownInterval = setInterval(() => {
           this.countdown --;
           if (this.countdown === 0) {
@@ -212,8 +236,8 @@ export class HomePage {
   }
 
   async onPanToCancel(event : any){
-    console.log(event);
-    console.log('onPanToCancel');
+    // console.log(event);
+    // console.log('onPanToCancel');
 
     let element = document.getElementById("slideToCancelActionBar");
     let elementPadding = 32;
@@ -245,15 +269,32 @@ export class HomePage {
       if(this.slideToCancelCallProgress == 1){
         clearInterval(this.callCountDownInterval);
 
-        document.getElementById('chargingpage').removeAttribute('hidden');
+        // Convert user interface to status page
+        document.getElementById('idlepage').removeAttribute('hidden');
         document.getElementById('loadcallpage').setAttribute('hidden','true');
+
+        // Resume robot task queue
+        console.log('resumeTaskQueueAPI')
+        let self = this;
+        new Promise(function(resolve, reject) {
+          self.http.get(self.robotUrl + '/gs-robot/cmd/resume_task_queue').subscribe(data => {
+            if(data){
+              console.log(`Successfully resumed robot's task at ${new Date().toLocaleString()}`);
+              resolve(true);
+            }
+            else{
+              console.log("Unable to resume task");
+              resolve(false);
+            }
+          });
+        });
+
 
         this.countdown = 3;
       }
       this.slideToCancelCallProgress = 0;
     }
   }
-
 
   getTranslateX(): number {
     let element = document.getElementById("slideToCallActionBar");
@@ -300,42 +341,6 @@ export class HomePage {
       console.log('Video calling ' + call.callee.nickname);
 
       this.utilityService.registCallEvent(call);
-
-      // Reset countdown timer to 3
-      // this.countdown = 3;
-    });
-  }
-
-  async getRobotStatusAPI(){
-    console.log('getRobotStatusAPI')
-    let self = this;
-    return new Promise(function(resolve, reject) {
-      const headers = {
-        headers: new HttpHeaders({
-          'Content-Type':  'application/json',
-          'Authorization': 'my-auth-token',
-          'Access-Control-Allow-Origin': '*'
-        })
-      };
-      self.storage.get("robot").then( (robot_data)=> {
-        let params = {
-            "robot_id":robot_data['serial_number']
-        };
-
-        self.http.post(self.url + '/api/getGSRobotStatus',{headers: headers, params: params}).subscribe(data => {
-        if(data['success']){
-          console.log(`Successfully retrieved robot status at ${new Date().toLocaleString()}`);
-          resolve(true);
-        }
-        else{
-          console.log("Unable to get robot status")
-          resolve(false);
-        }
-      }, error => {
-        console.log(error);
-        resolve(false);
-        })
-      });
     });
   }
 }
